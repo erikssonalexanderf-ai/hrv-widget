@@ -17,7 +17,8 @@ body {
     margin: 0;
     padding: 10px;
     font-family: Arial, sans-serif;
-    background: white;
+    background: black;
+    color: orange;
 }
 
 h2 {
@@ -110,13 +111,44 @@ new Chart(ctx, {
 
                 data: weekly,
 
-                borderColor: "red",
-
-                borderWidth: 2,
+                borderWidth: 3,
 
                 pointRadius: 3,
 
-                tension: 0.2
+                tension: 0.2,
+
+                segment: {
+                    borderColor: function(context) {
+
+                        const index = context.p0DataIndex;
+
+                        const value = weekly[index];
+
+                        const low = balancedLow[index];
+
+                        const high = balancedUpper[index];
+
+                        if (value >= low && value <= high) {
+
+                            return "lime";
+
+                        } else if (
+                            value >= low - 10 &&
+                            value <= high + 10
+                        ) {
+
+                            return "yellow";
+
+                        } else {
+
+                            return "red";
+
+                        }
+
+                    }
+
+                }
+
             },
 
             {
