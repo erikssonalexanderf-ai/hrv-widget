@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 <html>
@@ -7,12 +6,19 @@
 
 <meta charset="UTF-8">
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>HRV Trends</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
 <style>
+
+* {
+    box-sizing: border-box;
+}
+
 
 body {
     margin: 0;
@@ -35,6 +41,30 @@ h2 {
 }
 
 
+.controls {
+    display: flex;
+
+    justify-content: center;
+
+    margin-bottom: 15px;
+}
+
+
+select {
+    background: black;
+
+    color: orange;
+
+    border: 1px solid orange;
+
+    padding: 6px 10px;
+
+    border-radius: 4px;
+
+    font-size: 14px;
+}
+
+
 .chart-container {
     width: 100%;
 
@@ -51,6 +81,31 @@ h2 {
 <h2>HRV Trends</h2>
 
 
+<div class="controls">
+
+<select id="rangeSelect">
+
+<option value="7">1 Week</option>
+
+<option value="14">2 Weeks</option>
+
+<option value="56" selected>8 Weeks</option>
+
+<option value="30">1 Month</option>
+
+<option value="90">3 Months</option>
+
+<option value="180">6 Months</option>
+
+<option value="365">1 Year</option>
+
+<option value="730">2 Years</option>
+
+</select>
+
+</div>
+
+
 <div class="chart-container">
 
 <canvas id="hrvChart"></canvas>
@@ -65,133 +120,257 @@ h2 {
 // HRV DATA
 // ========================================================
 
-const hrvData = [{"date": "2025-08-15", "weekly_average": 64, "last_night_average": 78, "last_night_5min_high": 119, "status": "LOW", "balanced_low": 72, "balanced_upper": 102}, {"date": "2025-08-16", "weekly_average": 64, "last_night_average": 67, "last_night_5min_high": 110, "status": "LOW", "balanced_low": 72, "balanced_upper": 102}, {"date": "2025-08-18", "weekly_average": 66, "last_night_average": 80, "last_night_5min_high": 114, "status": "LOW", "balanced_low": 72, "balanced_upper": 102}, {"date": "2025-08-19", "weekly_average": 67, "last_night_average": 59, "last_night_5min_high": 80, "status": "UNBALANCED", "balanced_low": 71, "balanced_upper": 102}, {"date": "2025-08-20", "weekly_average": 69, "last_night_average": 65, "last_night_5min_high": 98, "status": "UNBALANCED", "balanced_low": 70, "balanced_upper": 101}, {"date": "2025-08-28", "weekly_average": 58, "last_night_average": 68, "last_night_5min_high": 92, "status": "LOW", "balanced_low": 69, "balanced_upper": 97}, {"date": "2025-08-29", "weekly_average": 55, "last_night_average": 58, "last_night_5min_high": 86, "status": "LOW", "balanced_low": 69, "balanced_upper": 97}, {"date": "2025-08-30", "weekly_average": 55, "last_night_average": null, "last_night_5min_high": null, "status": "LOW", "balanced_low": 69, "balanced_upper": 97}, {"date": "2025-08-31", "weekly_average": 55, "last_night_average": null, "last_night_5min_high": null, "status": "LOW", "balanced_low": 69, "balanced_upper": 96}, {"date": "2025-09-02", "weekly_average": 58, "last_night_average": 52, "last_night_5min_high": 76, "status": "LOW", "balanced_low": 66, "balanced_upper": 97}, {"date": "2025-09-03", "weekly_average": 58, "last_night_average": 55, "last_night_5min_high": 81, "status": "LOW", "balanced_low": 66, "balanced_upper": 96}, {"date": "2025-09-04", "weekly_average": 57, "last_night_average": 65, "last_night_5min_high": 102, "status": "LOW", "balanced_low": 66, "balanced_upper": 96}, {"date": "2025-09-05", "weekly_average": 56, "last_night_average": 51, "last_night_5min_high": 70, "status": "LOW", "balanced_low": 65, "balanced_upper": 95}, {"date": "2025-09-07", "weekly_average": 58, "last_night_average": 68, "last_night_5min_high": 91, "status": "LOW", "balanced_low": 65, "balanced_upper": 95}, {"date": "2025-09-08", "weekly_average": 59, "last_night_average": 67, "last_night_5min_high": 108, "status": "UNBALANCED", "balanced_low": 65, "balanced_upper": 95}, {"date": "2025-09-09", "weekly_average": 62, "last_night_average": 66, "last_night_5min_high": 99, "status": "UNBALANCED", "balanced_low": 64, "balanced_upper": 94}, {"date": "2025-09-10", "weekly_average": 64, "last_night_average": 68, "last_night_5min_high": 98, "status": "BALANCED", "balanced_low": 64, "balanced_upper": 93}, {"date": "2025-09-11", "weekly_average": 64, "last_night_average": 67, "last_night_5min_high": 101, "status": "BALANCED", "balanced_low": 64, "balanced_upper": 92}, {"date": "2025-09-12", "weekly_average": 65, "last_night_average": 55, "last_night_5min_high": 79, "status": "BALANCED", "balanced_low": 63, "balanced_upper": 92}, {"date": "2025-09-13", "weekly_average": 65, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 63, "balanced_upper": 92}, {"date": "2025-09-15", "weekly_average": 64, "last_night_average": 62, "last_night_5min_high": 84, "status": "BALANCED", "balanced_low": 63, "balanced_upper": 90}, {"date": "2025-09-16", "weekly_average": 61, "last_night_average": 54, "last_night_5min_high": 76, "status": "UNBALANCED", "balanced_low": 62, "balanced_upper": 90}, {"date": "2025-09-17", "weekly_average": 58, "last_night_average": 55, "last_night_5min_high": 76, "status": "UNBALANCED", "balanced_low": 62, "balanced_upper": 89}, {"date": "2025-09-18", "weekly_average": 57, "last_night_average": 57, "last_night_5min_high": 81, "status": "LOW", "balanced_low": 62, "balanced_upper": 88}, {"date": "2025-09-19", "weekly_average": 53, "last_night_average": 41, "last_night_5min_high": 50, "status": "LOW", "balanced_low": 62, "balanced_upper": 87}, {"date": "2025-09-20", "weekly_average": 55, "last_night_average": 62, "last_night_5min_high": 77, "status": "LOW", "balanced_low": 62, "balanced_upper": 87}, {"date": "2025-09-21", "weekly_average": 57, "last_night_average": 75, "last_night_5min_high": 110, "status": "UNBALANCED", "balanced_low": 62, "balanced_upper": 86}, {"date": "2025-09-22", "weekly_average": 60, "last_night_average": 84, "last_night_5min_high": 105, "status": "UNBALANCED", "balanced_low": 61, "balanced_upper": 85}, {"date": "2025-09-23", "weekly_average": 62, "last_night_average": 70, "last_night_5min_high": 104, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 85}, {"date": "2025-09-24", "weekly_average": 64, "last_night_average": 66, "last_night_5min_high": 104, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 84}, {"date": "2025-09-25", "weekly_average": 66, "last_night_average": 75, "last_night_5min_high": 112, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 84}, {"date": "2025-09-26", "weekly_average": 73, "last_night_average": 80, "last_night_5min_high": 126, "status": "BALANCED", "balanced_low": 59, "balanced_upper": 84}, {"date": "2025-09-27", "weekly_average": 77, "last_night_average": 92, "last_night_5min_high": 127, "status": "BALANCED", "balanced_low": 59, "balanced_upper": 84}, {"date": "2025-09-29", "weekly_average": 80, "last_night_average": 100, "last_night_5min_high": 129, "status": "BALANCED", "balanced_low": 59, "balanced_upper": 84}, {"date": "2025-09-30", "weekly_average": 80, "last_night_average": 69, "last_night_5min_high": 105, "status": "BALANCED", "balanced_low": 59, "balanced_upper": 84}, {"date": "2025-10-01", "weekly_average": 84, "last_night_average": 92, "last_night_5min_high": 122, "status": "UNBALANCED", "balanced_low": 59, "balanced_upper": 83}, {"date": "2025-10-02", "weekly_average": 84, "last_night_average": 73, "last_night_5min_high": 109, "status": "UNBALANCED", "balanced_low": 60, "balanced_upper": 83}, {"date": "2025-10-03", "weekly_average": 84, "last_night_average": 78, "last_night_5min_high": 104, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 84}, {"date": "2025-10-04", "weekly_average": 79, "last_night_average": 66, "last_night_5min_high": 98, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 85}, {"date": "2025-10-05", "weekly_average": 77, "last_night_average": 64, "last_night_5min_high": 99, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 84}, {"date": "2025-10-06", "weekly_average": 73, "last_night_average": 71, "last_night_5min_high": 95, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 86}, {"date": "2025-10-07", "weekly_average": 72, "last_night_average": 62, "last_night_5min_high": 87, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 86}, {"date": "2025-10-08", "weekly_average": 68, "last_night_average": 61, "last_night_5min_high": 88, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 87}, {"date": "2025-10-09", "weekly_average": 65, "last_night_average": 53, "last_night_5min_high": 68, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 87}, {"date": "2025-10-10", "weekly_average": 65, "last_night_average": 81, "last_night_5min_high": 120, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 88}, {"date": "2025-10-11", "weekly_average": 64, "last_night_average": 61, "last_night_5min_high": 107, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 87}, {"date": "2025-10-12", "weekly_average": 68, "last_night_average": 91, "last_night_5min_high": 145, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 87}, {"date": "2025-10-13", "weekly_average": 71, "last_night_average": 105, "last_night_5min_high": 137, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 87}, {"date": "2025-10-14", "weekly_average": 76, "last_night_average": 98, "last_night_5min_high": 128, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 86}, {"date": "2025-10-15", "weekly_average": 77, "last_night_average": 66, "last_night_5min_high": 104, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 86}, {"date": "2025-10-16", "weekly_average": 79, "last_night_average": 62, "last_night_5min_high": 102, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 86}, {"date": "2025-10-17", "weekly_average": 80, "last_night_average": 88, "last_night_5min_high": 118, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 86}, {"date": "2025-10-18", "weekly_average": 83, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 86}, {"date": "2025-10-20", "weekly_average": 78, "last_night_average": 81, "last_night_5min_high": 114, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 89}, {"date": "2025-10-21", "weekly_average": 72, "last_night_average": 66, "last_night_5min_high": 88, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 90}, {"date": "2025-10-22", "weekly_average": 71, "last_night_average": 62, "last_night_5min_high": 96, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 90}, {"date": "2025-10-23", "weekly_average": 71, "last_night_average": 63, "last_night_5min_high": 80, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 90}, {"date": "2025-10-24", "weekly_average": 67, "last_night_average": 64, "last_night_5min_high": 90, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 91}, {"date": "2025-10-25", "weekly_average": 71, "last_night_average": 94, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 91}, {"date": "2025-10-27", "weekly_average": 73, "last_night_average": 96, "last_night_5min_high": 118, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 91}, {"date": "2025-10-28", "weekly_average": 75, "last_night_average": 79, "last_night_5min_high": 114, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 91}, {"date": "2025-10-29", "weekly_average": 78, "last_night_average": 81, "last_night_5min_high": 117, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 91}, {"date": "2025-10-30", "weekly_average": 82, "last_night_average": 85, "last_night_5min_high": 126, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 91}, {"date": "2025-10-31", "weekly_average": 88, "last_night_average": 95, "last_night_5min_high": 122, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 90}, {"date": "2025-11-01", "weekly_average": 88, "last_night_average": 94, "last_night_5min_high": 117, "status": "BALANCED", "balanced_low": 62, "balanced_upper": 91}, {"date": "2025-11-02", "weekly_average": 89, "last_night_average": 95, "last_night_5min_high": 119, "status": "BALANCED", "balanced_low": 62, "balanced_upper": 91}, {"date": "2025-11-03", "weekly_average": 90, "last_night_average": 103, "last_night_5min_high": 143, "status": "BALANCED", "balanced_low": 62, "balanced_upper": 92}, {"date": "2025-11-04", "weekly_average": 93, "last_night_average": 103, "last_night_5min_high": 136, "status": "UNBALANCED", "balanced_low": 62, "balanced_upper": 92}, {"date": "2025-11-05", "weekly_average": 95, "last_night_average": 94, "last_night_5min_high": 132, "status": "UNBALANCED", "balanced_low": 63, "balanced_upper": 93}, {"date": "2025-11-06", "weekly_average": 97, "last_night_average": 98, "last_night_5min_high": 136, "status": "UNBALANCED", "balanced_low": 63, "balanced_upper": 94}, {"date": "2025-11-07", "weekly_average": 97, "last_night_average": 89, "last_night_5min_high": 114, "status": "UNBALANCED", "balanced_low": 63, "balanced_upper": 95}, {"date": "2025-11-08", "weekly_average": 99, "last_night_average": 112, "last_night_5min_high": 151, "status": "UNBALANCED", "balanced_low": 64, "balanced_upper": 96}, {"date": "2025-11-10", "weekly_average": 99, "last_night_average": 101, "last_night_5min_high": 132, "status": "UNBALANCED", "balanced_low": 64, "balanced_upper": 98}, {"date": "2025-11-11", "weekly_average": 98, "last_night_average": 97, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 65, "balanced_upper": 100}, {"date": "2025-11-12", "weekly_average": 97, "last_night_average": 86, "last_night_5min_high": 118, "status": "BALANCED", "balanced_low": 65, "balanced_upper": 101}, {"date": "2025-11-13", "weekly_average": 97, "last_night_average": 100, "last_night_5min_high": 120, "status": "BALANCED", "balanced_low": 66, "balanced_upper": 102}, {"date": "2025-11-14", "weekly_average": 98, "last_night_average": 94, "last_night_5min_high": 123, "status": "BALANCED", "balanced_low": 67, "balanced_upper": 102}, {"date": "2025-11-15", "weekly_average": 95, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 67, "balanced_upper": 104}, {"date": "2025-11-17", "weekly_average": 96, "last_night_average": 105, "last_night_5min_high": 135, "status": "BALANCED", "balanced_low": 68, "balanced_upper": 105}, {"date": "2025-11-18", "weekly_average": 96, "last_night_average": 97, "last_night_5min_high": 134, "status": "BALANCED", "balanced_low": 68, "balanced_upper": 106}, {"date": "2025-11-19", "weekly_average": 94, "last_night_average": 76, "last_night_5min_high": 114, "status": "BALANCED", "balanced_low": 69, "balanced_upper": 106}, {"date": "2025-11-20", "weekly_average": 90, "last_night_average": 79, "last_night_5min_high": 127, "status": "BALANCED", "balanced_low": 69, "balanced_upper": 107}, {"date": "2025-11-21", "weekly_average": 87, "last_night_average": 80, "last_night_5min_high": 128, "status": "BALANCED", "balanced_low": 70, "balanced_upper": 107}, {"date": "2025-11-22", "weekly_average": 87, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 70, "balanced_upper": 107}, {"date": "2025-11-24", "weekly_average": 84, "last_night_average": 88, "last_night_5min_high": 124, "status": "BALANCED", "balanced_low": 70, "balanced_upper": 108}, {"date": "2025-11-25", "weekly_average": 82, "last_night_average": 88, "last_night_5min_high": 123, "status": "BALANCED", "balanced_low": 71, "balanced_upper": 109}, {"date": "2025-11-27", "weekly_average": 91, "last_night_average": 112, "last_night_5min_high": 146, "status": "BALANCED", "balanced_low": 71, "balanced_upper": 109}, {"date": "2025-11-28", "weekly_average": 99, "last_night_average": 111, "last_night_5min_high": 142, "status": "BALANCED", "balanced_low": 72, "balanced_upper": 108}, {"date": "2025-11-29", "weekly_average": 99, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 72, "balanced_upper": 108}, {"date": "2025-11-30", "weekly_average": 99, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 72, "balanced_upper": 109}, {"date": "2025-12-01", "weekly_average": 100, "last_night_average": 90, "last_night_5min_high": 123, "status": "BALANCED", "balanced_low": 73, "balanced_upper": 109}, {"date": "2025-12-02", "weekly_average": 102, "last_night_average": 99, "last_night_5min_high": 138, "status": "BALANCED", "balanced_low": 73, "balanced_upper": 109}, {"date": "2025-12-03", "weekly_average": 101, "last_night_average": 94, "last_night_5min_high": 143, "status": "BALANCED", "balanced_low": 73, "balanced_upper": 109}, {"date": "2025-12-04", "weekly_average": 99, "last_night_average": 103, "last_night_5min_high": 132, "status": "BALANCED", "balanced_low": 74, "balanced_upper": 111}, {"date": "2025-12-05", "weekly_average": 99, "last_night_average": 111, "last_night_5min_high": 150, "status": "BALANCED", "balanced_low": 75, "balanced_upper": 111}, {"date": "2025-12-06", "weekly_average": 99, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 75, "balanced_upper": 112}, {"date": "2025-12-08", "weekly_average": 101, "last_night_average": 98, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 75, "balanced_upper": 112}, {"date": "2025-12-09", "weekly_average": 100, "last_night_average": 93, "last_night_5min_high": 134, "status": "BALANCED", "balanced_low": 76, "balanced_upper": 112}, {"date": "2025-12-10", "weekly_average": 99, "last_night_average": 93, "last_night_5min_high": 122, "status": "BALANCED", "balanced_low": 77, "balanced_upper": 112}, {"date": "2025-12-11", "weekly_average": 99, "last_night_average": 101, "last_night_5min_high": 128, "status": "BALANCED", "balanced_low": 77, "balanced_upper": 113}, {"date": "2025-12-12", "weekly_average": 97, "last_night_average": 102, "last_night_5min_high": 134, "status": "BALANCED", "balanced_low": 78, "balanced_upper": 113}, {"date": "2025-12-13", "weekly_average": 96, "last_night_average": 89, "last_night_5min_high": 122, "status": "BALANCED", "balanced_low": 79, "balanced_upper": 113}, {"date": "2025-12-14", "weekly_average": 97, "last_night_average": 104, "last_night_5min_high": 142, "status": "BALANCED", "balanced_low": 79, "balanced_upper": 114}, {"date": "2025-12-15", "weekly_average": 98, "last_night_average": 108, "last_night_5min_high": 145, "status": "BALANCED", "balanced_low": 79, "balanced_upper": 114}, {"date": "2025-12-16", "weekly_average": 100, "last_night_average": 106, "last_night_5min_high": 138, "status": "BALANCED", "balanced_low": 79, "balanced_upper": 114}, {"date": "2025-12-17", "weekly_average": 100, "last_night_average": 91, "last_night_5min_high": 123, "status": "BALANCED", "balanced_low": 80, "balanced_upper": 114}, {"date": "2025-12-18", "weekly_average": 99, "last_night_average": 94, "last_night_5min_high": 123, "status": "BALANCED", "balanced_low": 81, "balanced_upper": 114}, {"date": "2025-12-19", "weekly_average": 98, "last_night_average": 94, "last_night_5min_high": 126, "status": "BALANCED", "balanced_low": 81, "balanced_upper": 114}, {"date": "2025-12-23", "weekly_average": 97, "last_night_average": 107, "last_night_5min_high": 138, "status": "BALANCED", "balanced_low": 83, "balanced_upper": 116}, {"date": "2025-12-24", "weekly_average": 99, "last_night_average": 103, "last_night_5min_high": 133, "status": "BALANCED", "balanced_low": 84, "balanced_upper": 115}, {"date": "2025-12-25", "weekly_average": 101, "last_night_average": 102, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2025-12-26", "weekly_average": 103, "last_night_average": 105, "last_night_5min_high": 131, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2025-12-27", "weekly_average": 102, "last_night_average": 97, "last_night_5min_high": 137, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2025-12-28", "weekly_average": 101, "last_night_average": 99, "last_night_5min_high": 131, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2025-12-30", "weekly_average": 100, "last_night_average": 96, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 86, "balanced_upper": 115}, {"date": "2025-12-31", "weekly_average": 100, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 87, "balanced_upper": 114}, {"date": "2026-01-01", "weekly_average": 99, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 88, "balanced_upper": 114}, {"date": "2026-01-02", "weekly_average": 96, "last_night_average": 91, "last_night_5min_high": 129, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 114}, {"date": "2026-01-03", "weekly_average": 98, "last_night_average": 109, "last_night_5min_high": 135, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 113}, {"date": "2026-01-04", "weekly_average": 97, "last_night_average": 94, "last_night_5min_high": 157, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 113}, {"date": "2026-01-05", "weekly_average": 98, "last_night_average": 99, "last_night_5min_high": 128, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 113}, {"date": "2026-01-06", "weekly_average": 99, "last_night_average": 105, "last_night_5min_high": 129, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 113}, {"date": "2026-01-07", "weekly_average": 101, "last_night_average": 111, "last_night_5min_high": 148, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 113}, {"date": "2026-01-08", "weekly_average": 101, "last_night_average": 99, "last_night_5min_high": 129, "status": "BALANCED", "balanced_low": 91, "balanced_upper": 112}, {"date": "2026-01-09", "weekly_average": 104, "last_night_average": 111, "last_night_5min_high": 136, "status": "BALANCED", "balanced_low": 91, "balanced_upper": 112}, {"date": "2026-01-10", "weekly_average": 103, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 91, "balanced_upper": 112}, {"date": "2026-01-11", "weekly_average": 105, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 91, "balanced_upper": 112}, {"date": "2026-01-12", "weekly_average": 105, "last_night_average": 100, "last_night_5min_high": 128, "status": "BALANCED", "balanced_low": 91, "balanced_upper": 112}, {"date": "2026-01-13", "weekly_average": 107, "last_night_average": 117, "last_night_5min_high": 147, "status": "BALANCED", "balanced_low": 92, "balanced_upper": 112}, {"date": "2026-01-14", "weekly_average": 107, "last_night_average": 108, "last_night_5min_high": 140, "status": "BALANCED", "balanced_low": 92, "balanced_upper": 112}, {"date": "2026-01-15", "weekly_average": 110, "last_night_average": 114, "last_night_5min_high": 149, "status": "BALANCED", "balanced_low": 93, "balanced_upper": 111}, {"date": "2026-01-16", "weekly_average": 107, "last_night_average": 97, "last_night_5min_high": 124, "status": "BALANCED", "balanced_low": 94, "balanced_upper": 112}, {"date": "2026-01-17", "weekly_average": 108, "last_night_average": 110, "last_night_5min_high": 154, "status": "BALANCED", "balanced_low": 94, "balanced_upper": 112}, {"date": "2026-01-18", "weekly_average": 108, "last_night_average": 108, "last_night_5min_high": 149, "status": "BALANCED", "balanced_low": 94, "balanced_upper": 112}, {"date": "2026-01-19", "weekly_average": 109, "last_night_average": 112, "last_night_5min_high": 164, "status": "BALANCED", "balanced_low": 94, "balanced_upper": 112}, {"date": "2026-01-20", "weekly_average": 109, "last_night_average": 113, "last_night_5min_high": 159, "status": "BALANCED", "balanced_low": 94, "balanced_upper": 112}, {"date": "2026-01-21", "weekly_average": 108, "last_night_average": 101, "last_night_5min_high": 141, "status": "BALANCED", "balanced_low": 95, "balanced_upper": 113}, {"date": "2026-01-22", "weekly_average": 109, "last_night_average": 120, "last_night_5min_high": 163, "status": "BALANCED", "balanced_low": 95, "balanced_upper": 113}, {"date": "2026-01-23", "weekly_average": 108, "last_night_average": 93, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 95, "balanced_upper": 113}, {"date": "2026-01-24", "weekly_average": 108, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 95, "balanced_upper": 113}, {"date": "2026-01-25", "weekly_average": 108, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 95, "balanced_upper": 113}, {"date": "2026-01-26", "weekly_average": 106, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 96, "balanced_upper": 114}, {"date": "2026-01-27", "weekly_average": 108, "last_night_average": 121, "last_night_5min_high": 169, "status": "BALANCED", "balanced_low": 96, "balanced_upper": 115}, {"date": "2026-01-28", "weekly_average": 112, "last_night_average": 118, "last_night_5min_high": 162, "status": "BALANCED", "balanced_low": 96, "balanced_upper": 114}, {"date": "2026-01-29", "weekly_average": 111, "last_night_average": 115, "last_night_5min_high": 162, "status": "BALANCED", "balanced_low": 97, "balanced_upper": 115}, {"date": "2026-01-30", "weekly_average": 118, "last_night_average": 120, "last_night_5min_high": 165, "status": "UNBALANCED", "balanced_low": 97, "balanced_upper": 115}, {"date": "2026-02-01", "weekly_average": 117, "last_night_average": 113, "last_night_5min_high": 155, "status": "UNBALANCED", "balanced_low": 97, "balanced_upper": 115}, {"date": "2026-02-02", "weekly_average": 116, "last_night_average": 112, "last_night_5min_high": 148, "status": "UNBALANCED", "balanced_low": 97, "balanced_upper": 115}, {"date": "2026-02-03", "weekly_average": 114, "last_night_average": 109, "last_night_5min_high": 158, "status": "BALANCED", "balanced_low": 97, "balanced_upper": 116}, {"date": "2026-02-04", "weekly_average": 112, "last_night_average": 104, "last_night_5min_high": 148, "status": "BALANCED", "balanced_low": 98, "balanced_upper": 117}, {"date": "2026-02-05", "weekly_average": 112, "last_night_average": 117, "last_night_5min_high": 162, "status": "BALANCED", "balanced_low": 98, "balanced_upper": 117}, {"date": "2026-02-06", "weekly_average": 109, "last_night_average": 103, "last_night_5min_high": 137, "status": "BALANCED", "balanced_low": 98, "balanced_upper": 117}, {"date": "2026-02-07", "weekly_average": 109, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 98, "balanced_upper": 118}, {"date": "2026-02-08", "weekly_average": 109, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 98, "balanced_upper": 118}, {"date": "2026-02-09", "weekly_average": 109, "last_night_average": 115, "last_night_5min_high": 151, "status": "BALANCED", "balanced_low": 99, "balanced_upper": 118}, {"date": "2026-02-10", "weekly_average": 110, "last_night_average": 109, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 99, "balanced_upper": 118}, {"date": "2026-02-11", "weekly_average": 110, "last_night_average": 107, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-02-12", "weekly_average": 107, "last_night_average": 102, "last_night_5min_high": 152, "status": "BALANCED", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-02-13", "weekly_average": 108, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-02-14", "weekly_average": 105, "last_night_average": 92, "last_night_5min_high": 121, "status": "BALANCED", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-02-15", "weekly_average": 104, "last_night_average": 102, "last_night_5min_high": 142, "status": "BALANCED", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-02-16", "weekly_average": 102, "last_night_average": 102, "last_night_5min_high": 140, "status": "BALANCED", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-17", "weekly_average": 99, "last_night_average": 87, "last_night_5min_high": 129, "status": "UNBALANCED", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-18", "weekly_average": 98, "last_night_average": 101, "last_night_5min_high": 147, "status": "UNBALANCED", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-19", "weekly_average": 96, "last_night_average": 90, "last_night_5min_high": 128, "status": "LOW", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-20", "weekly_average": 96, "last_night_average": 99, "last_night_5min_high": 160, "status": "LOW", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-21", "weekly_average": 97, "last_night_average": 95, "last_night_5min_high": 132, "status": "LOW", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-22", "weekly_average": 95, "last_night_average": 91, "last_night_5min_high": 120, "status": "LOW", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-23", "weekly_average": 95, "last_night_average": 100, "last_night_5min_high": 125, "status": "LOW", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-24", "weekly_average": 94, "last_night_average": 84, "last_night_5min_high": 132, "status": "LOW", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-25", "weekly_average": 94, "last_night_average": 95, "last_night_5min_high": 146, "status": "LOW", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-26", "weekly_average": 95, "last_night_average": 102, "last_night_5min_high": 143, "status": "LOW", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-02-27", "weekly_average": 96, "last_night_average": 103, "last_night_5min_high": 154, "status": "LOW", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-02-28", "weekly_average": 96, "last_night_average": null, "last_night_5min_high": null, "status": "LOW", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-03-01", "weekly_average": 96, "last_night_average": 91, "last_night_5min_high": 116, "status": "UNBALANCED", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-03-02", "weekly_average": 92, "last_night_average": 80, "last_night_5min_high": 116, "status": "LOW", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-03-03", "weekly_average": 92, "last_night_average": 80, "last_night_5min_high": 124, "status": "LOW", "balanced_low": 99, "balanced_upper": 119}, {"date": "2026-03-04", "weekly_average": 86, "last_night_average": 67, "last_night_5min_high": 110, "status": "LOW", "balanced_low": 99, "balanced_upper": 118}, {"date": "2026-03-05", "weekly_average": 82, "last_night_average": 76, "last_night_5min_high": 107, "status": "LOW", "balanced_low": 99, "balanced_upper": 118}, {"date": "2026-03-06", "weekly_average": 74, "last_night_average": 54, "last_night_5min_high": 87, "status": "LOW", "balanced_low": 99, "balanced_upper": 118}, {"date": "2026-03-07", "weekly_average": 75, "last_night_average": 81, "last_night_5min_high": 125, "status": "LOW", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-03-08", "weekly_average": 73, "last_night_average": 74, "last_night_5min_high": 114, "status": "LOW", "balanced_low": 99, "balanced_upper": 118}, {"date": "2026-03-09", "weekly_average": 71, "last_night_average": 69, "last_night_5min_high": 109, "status": "LOW", "balanced_low": 98, "balanced_upper": 119}, {"date": "2026-03-10", "weekly_average": 72, "last_night_average": 86, "last_night_5min_high": 135, "status": "LOW", "balanced_low": 98, "balanced_upper": 119}, {"date": "2026-03-11", "weekly_average": 75, "last_night_average": 91, "last_night_5min_high": 127, "status": "LOW", "balanced_low": 96, "balanced_upper": 121}, {"date": "2026-03-12", "weekly_average": 77, "last_night_average": 93, "last_night_5min_high": 134, "status": "LOW", "balanced_low": 95, "balanced_upper": 122}, {"date": "2026-03-13", "weekly_average": 82, "last_night_average": 85, "last_night_5min_high": 135, "status": "LOW", "balanced_low": 93, "balanced_upper": 125}, {"date": "2026-03-14", "weekly_average": 85, "last_night_average": 102, "last_night_5min_high": 128, "status": "LOW", "balanced_low": 92, "balanced_upper": 125}, {"date": "2026-03-15", "weekly_average": 87, "last_night_average": null, "last_night_5min_high": null, "status": "UNBALANCED", "balanced_low": 92, "balanced_upper": 125}, {"date": "2026-03-16", "weekly_average": 92, "last_night_average": 93, "last_night_5min_high": 129, "status": "BALANCED", "balanced_low": 91, "balanced_upper": 126}, {"date": "2026-03-17", "weekly_average": 96, "last_night_average": 111, "last_night_5min_high": 144, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 125}, {"date": "2026-03-18", "weekly_average": 98, "last_night_average": 107, "last_night_5min_high": 144, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 125}, {"date": "2026-03-19", "weekly_average": 100, "last_night_average": 103, "last_night_5min_high": 138, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 124}, {"date": "2026-03-20", "weekly_average": 103, "last_night_average": 103, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 124}, {"date": "2026-03-21", "weekly_average": 104, "last_night_average": 106, "last_night_5min_high": 153, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 124}, {"date": "2026-03-22", "weekly_average": 104, "last_night_average": 107, "last_night_5min_high": 134, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 124}, {"date": "2026-03-23", "weekly_average": 105, "last_night_average": 101, "last_night_5min_high": 121, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 124}, {"date": "2026-03-24", "weekly_average": 105, "last_night_average": 105, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 124}, {"date": "2026-03-25", "weekly_average": 103, "last_night_average": 96, "last_night_5min_high": 148, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 124}, {"date": "2026-03-26", "weekly_average": 104, "last_night_average": 111, "last_night_5min_high": 155, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 123}, {"date": "2026-03-27", "weekly_average": 104, "last_night_average": 101, "last_night_5min_high": 140, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 123}, {"date": "2026-03-28", "weekly_average": 103, "last_night_average": 103, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 123}, {"date": "2026-03-29", "weekly_average": 102, "last_night_average": 97, "last_night_5min_high": 129, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 123}, {"date": "2026-03-30", "weekly_average": 99, "last_night_average": 80, "last_night_5min_high": 135, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 123}, {"date": "2026-03-31", "weekly_average": 95, "last_night_average": 83, "last_night_5min_high": 131, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 123}, {"date": "2026-04-01", "weekly_average": 96, "last_night_average": 100, "last_night_5min_high": 148, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 122}, {"date": "2026-04-02", "weekly_average": 94, "last_night_average": 99, "last_night_5min_high": 148, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 122}, {"date": "2026-04-03", "weekly_average": 93, "last_night_average": 90, "last_night_5min_high": 135, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 122}, {"date": "2026-04-04", "weekly_average": 92, "last_night_average": 97, "last_night_5min_high": 128, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 122}, {"date": "2026-04-05", "weekly_average": 91, "last_night_average": 89, "last_night_5min_high": 136, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 121}, {"date": "2026-04-06", "weekly_average": 92, "last_night_average": 85, "last_night_5min_high": 114, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 121}, {"date": "2026-04-07", "weekly_average": 88, "last_night_average": 62, "last_night_5min_high": 93, "status": "UNBALANCED", "balanced_low": 89, "balanced_upper": 120}, {"date": "2026-04-08", "weekly_average": 82, "last_night_average": 62, "last_night_5min_high": 109, "status": "UNBALANCED", "balanced_low": 89, "balanced_upper": 120}, {"date": "2026-04-09", "weekly_average": 81, "last_night_average": 91, "last_night_5min_high": 135, "status": "LOW", "balanced_low": 88, "balanced_upper": 119}, {"date": "2026-04-10", "weekly_average": 80, "last_night_average": 82, "last_night_5min_high": 119, "status": "LOW", "balanced_low": 88, "balanced_upper": 119}, {"date": "2026-04-11", "weekly_average": 80, "last_night_average": 97, "last_night_5min_high": 136, "status": "LOW", "balanced_low": 88, "balanced_upper": 119}, {"date": "2026-04-12", "weekly_average": 80, "last_night_average": 93, "last_night_5min_high": 126, "status": "LOW", "balanced_low": 88, "balanced_upper": 118}, {"date": "2026-04-13", "weekly_average": 81, "last_night_average": 91, "last_night_5min_high": 128, "status": "LOW", "balanced_low": 88, "balanced_upper": 118}, {"date": "2026-04-14", "weekly_average": 86, "last_night_average": 90, "last_night_5min_high": 137, "status": "UNBALANCED", "balanced_low": 87, "balanced_upper": 118}, {"date": "2026-04-15", "weekly_average": 91, "last_night_average": 96, "last_night_5min_high": 140, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 118}, {"date": "2026-04-16", "weekly_average": 92, "last_night_average": 96, "last_night_5min_high": 131, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 118}, {"date": "2026-04-17", "weekly_average": 94, "last_night_average": 99, "last_night_5min_high": 140, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 117}, {"date": "2026-04-19", "weekly_average": 94, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 117}, {"date": "2026-04-20", "weekly_average": 95, "last_night_average": 96, "last_night_5min_high": 126, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 116}, {"date": "2026-04-21", "weekly_average": 96, "last_night_average": 95, "last_night_5min_high": 135, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 116}, {"date": "2026-04-22", "weekly_average": 97, "last_night_average": 105, "last_night_5min_high": 140, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2026-04-23", "weekly_average": 98, "last_night_average": 99, "last_night_5min_high": 141, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2026-04-24", "weekly_average": 97, "last_night_average": 93, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2026-04-25", "weekly_average": 98, "last_night_average": 100, "last_night_5min_high": 142, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2026-04-26", "weekly_average": 98, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2026-04-27", "weekly_average": 99, "last_night_average": 105, "last_night_5min_high": 134, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 114}, {"date": "2026-04-28", "weekly_average": 99, "last_night_average": 90, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 114}, {"date": "2026-04-29", "weekly_average": 98, "last_night_average": 104, "last_night_5min_high": 145, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 114}, {"date": "2026-04-30", "weekly_average": 99, "last_night_average": 101, "last_night_5min_high": 137, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 114}, {"date": "2026-05-01", "weekly_average": 100, "last_night_average": 98, "last_night_5min_high": 141, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 114}, {"date": "2026-05-02", "weekly_average": 99, "last_night_average": 97, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 114}, {"date": "2026-05-04", "weekly_average": 98, "last_night_average": 101, "last_night_5min_high": 136, "status": "BALANCED", "balanced_low": 86, "balanced_upper": 114}, {"date": "2026-05-05", "weekly_average": 98, "last_night_average": 90, "last_night_5min_high": 128, "status": "BALANCED", "balanced_low": 86, "balanced_upper": 114}, {"date": "2026-05-06", "weekly_average": 98, "last_night_average": 101, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 86, "balanced_upper": 114}, {"date": "2026-05-07", "weekly_average": 97, "last_night_average": 97, "last_night_5min_high": 144, "status": "BALANCED", "balanced_low": 86, "balanced_upper": 114}, {"date": "2026-05-08", "weekly_average": 98, "last_night_average": 103, "last_night_5min_high": 136, "status": "BALANCED", "balanced_low": 86, "balanced_upper": 114}, {"date": "2026-05-09", "weekly_average": 96, "last_night_average": 84, "last_night_5min_high": 127, "status": "BALANCED", "balanced_low": 86, "balanced_upper": 114}, {"date": "2026-05-10", "weekly_average": 94, "last_night_average": 88, "last_night_5min_high": 136, "status": "BALANCED", "balanced_low": 87, "balanced_upper": 114}, {"date": "2026-05-11", "weekly_average": 94, "last_night_average": 96, "last_night_5min_high": 127, "status": "BALANCED", "balanced_low": 87, "balanced_upper": 114}, {"date": "2026-05-12", "weekly_average": 94, "last_night_average": 92, "last_night_5min_high": 131, "status": "BALANCED", "balanced_low": 87, "balanced_upper": 114}, {"date": "2026-05-13", "weekly_average": 92, "last_night_average": 87, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 87, "balanced_upper": 114}, {"date": "2026-05-14", "weekly_average": 92, "last_night_average": 99, "last_night_5min_high": 159, "status": "BALANCED", "balanced_low": 87, "balanced_upper": 114}, {"date": "2026-05-15", "weekly_average": 92, "last_night_average": 97, "last_night_5min_high": 132, "status": "BALANCED", "balanced_low": 88, "balanced_upper": 113}, {"date": "2026-05-16", "weekly_average": 93, "last_night_average": 93, "last_night_5min_high": 142, "status": "BALANCED", "balanced_low": 87, "balanced_upper": 113}, {"date": "2026-05-17", "weekly_average": 94, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 87, "balanced_upper": 113}, {"date": "2026-05-18", "weekly_average": 93, "last_night_average": 91, "last_night_5min_high": 143, "status": "BALANCED", "balanced_low": 88, "balanced_upper": 113}, {"date": "2026-05-19", "weekly_average": 93, "last_night_average": 94, "last_night_5min_high": 124, "status": "BALANCED", "balanced_low": 88, "balanced_upper": 113}, {"date": "2026-05-20", "weekly_average": 95, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 88, "balanced_upper": 112}, {"date": "2026-05-21", "weekly_average": 96, "last_night_average": 106, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 88, "balanced_upper": 112}, {"date": "2026-05-22", "weekly_average": 96, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 88, "balanced_upper": 112}, {"date": "2026-05-30", "weekly_average": null, "last_night_average": 98, "last_night_5min_high": 139, "status": "NONE", "balanced_low": 89, "balanced_upper": 110}, {"date": "2026-05-31", "weekly_average": null, "last_night_average": 100, "last_night_5min_high": 125, "status": "NONE", "balanced_low": 89, "balanced_upper": 110}, {"date": "2026-06-01", "weekly_average": null, "last_night_average": 79, "last_night_5min_high": 115, "status": "NONE", "balanced_low": 89, "balanced_upper": 110}, {"date": "2026-06-02", "weekly_average": 95, "last_night_average": 106, "last_night_5min_high": 147, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 110}, {"date": "2026-06-03", "weekly_average": 96, "last_night_average": 99, "last_night_5min_high": 136, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-04", "weekly_average": 98, "last_night_average": 109, "last_night_5min_high": 153, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-05", "weekly_average": 98, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-06", "weekly_average": 98, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-07", "weekly_average": 98, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-08", "weekly_average": 102, "last_night_average": 94, "last_night_5min_high": 137, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 110}, {"date": "2026-06-09", "weekly_average": 97, "last_night_average": 86, "last_night_5min_high": 123, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-11", "weekly_average": null, "last_night_average": 88, "last_night_5min_high": 133, "status": "NONE", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-12", "weekly_average": 87, "last_night_average": 81, "last_night_5min_high": 145, "status": "UNBALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-13", "weekly_average": 90, "last_night_average": 105, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-14", "weekly_average": 90, "last_night_average": 85, "last_night_5min_high": 118, "status": "UNBALANCED", "balanced_low": 91, "balanced_upper": 110}, {"date": "2026-06-15", "weekly_average": 89, "last_night_average": 88, "last_night_5min_high": 126, "status": "UNBALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-16", "weekly_average": 86, "last_night_average": 72, "last_night_5min_high": 112, "status": "LOW", "balanced_low": 90, "balanced_upper": 109}, {"date": "2026-06-17", "weekly_average": 86, "last_night_average": 84, "last_night_5min_high": 123, "status": "LOW", "balanced_low": 91, "balanced_upper": 108}, {"date": "2026-06-18", "weekly_average": 86, "last_night_average": 91, "last_night_5min_high": 130, "status": "LOW", "balanced_low": 90, "balanced_upper": 108}, {"date": "2026-06-19", "weekly_average": 86, "last_night_average": 83, "last_night_5min_high": 130, "status": "UNBALANCED", "balanced_low": 90, "balanced_upper": 108}, {"date": "2026-06-20", "weekly_average": 85, "last_night_average": 92, "last_night_5min_high": 113, "status": "LOW", "balanced_low": 90, "balanced_upper": 109}, {"date": "2026-06-21", "weekly_average": 84, "last_night_average": 80, "last_night_5min_high": 130, "status": "LOW", "balanced_low": 90, "balanced_upper": 108}, {"date": "2026-06-22", "weekly_average": 85, "last_night_average": 95, "last_night_5min_high": 132, "status": "LOW", "balanced_low": 90, "balanced_upper": 108}, {"date": "2026-06-23", "weekly_average": 88, "last_night_average": 91, "last_night_5min_high": 119, "status": "UNBALANCED", "balanced_low": 89, "balanced_upper": 109}, {"date": "2026-06-24", "weekly_average": 89, "last_night_average": 93, "last_night_5min_high": 142, "status": "UNBALANCED", "balanced_low": 90, "balanced_upper": 108}, {"date": "2026-06-25", "weekly_average": 89, "last_night_average": 90, "last_night_5min_high": 136, "status": "UNBALANCED", "balanced_low": 90, "balanced_upper": 108}, {"date": "2026-06-26", "weekly_average": 91, "last_night_average": 96, "last_night_5min_high": 147, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 108}, {"date": "2026-06-27", "weekly_average": 90, "last_night_average": 84, "last_night_5min_high": 117, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 107}, {"date": "2026-06-28", "weekly_average": 91, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 107}, {"date": "2026-06-29", "weekly_average": 94, "last_night_average": 109, "last_night_5min_high": 161, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 107}, {"date": "2026-06-30", "weekly_average": 97, "last_night_average": 115, "last_night_5min_high": 140, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 107}, {"date": "2026-07-01", "weekly_average": 98, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 106}, {"date": "2026-07-02", "weekly_average": 102, "last_night_average": 112, "last_night_5min_high": 162, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 106}, {"date": "2026-07-03", "weekly_average": 103, "last_night_average": 100, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 106}, {"date": "2026-07-04", "weekly_average": 106, "last_night_average": 95, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 106}, {"date": "2026-07-06", "weekly_average": 105, "last_night_average": 105, "last_night_5min_high": 149, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 106}, {"date": "2026-07-07", "weekly_average": 102, "last_night_average": 99, "last_night_5min_high": 132, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 108}, {"date": "2026-07-08", "weekly_average": 103, "last_night_average": 107, "last_night_5min_high": 131, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 108}, {"date": "2026-07-09", "weekly_average": 102, "last_night_average": 108, "last_night_5min_high": 136, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 108}, {"date": "2026-07-10", "weekly_average": 103, "last_night_average": 102, "last_night_5min_high": 134, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 109}, {"date": "2026-07-11", "weekly_average": 104, "last_night_average": 104, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 109}, {"date": "2026-07-12", "weekly_average": 104, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 109}, {"date": "2026-07-13", "weekly_average": 105, "last_night_average": 109, "last_night_5min_high": 151, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 109}, {"date": "2026-07-14", "weekly_average": 104, "last_night_average": 94, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 109}, {"date": "2026-07-15", "weekly_average": 103, "last_night_average": 104, "last_night_5min_high": 129, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-07-16", "weekly_average": 98, "last_night_average": 79, "last_night_5min_high": 114, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-07-17", "weekly_average": 98, "last_night_average": 103, "last_night_5min_high": 132, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-07-18", "weekly_average": 97, "last_night_average": 97, "last_night_5min_high": 131, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-07-19", "weekly_average": 94, "last_night_average": 80, "last_night_5min_high": 115, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-07-20", "weekly_average": 91, "last_night_average": 87, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-21", "weekly_average": 90, "last_night_average": 87, "last_night_5min_high": 127, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-22", "weekly_average": 90, "last_night_average": 104, "last_night_5min_high": 145, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-23", "weekly_average": 93, "last_night_average": 97, "last_night_5min_high": 134, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-24", "weekly_average": 92, "last_night_average": 93, "last_night_5min_high": 141, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-25", "weekly_average": 92, "last_night_average": 98, "last_night_5min_high": 125, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-26", "weekly_average": 95, "last_night_average": 104, "last_night_5min_high": 138, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-27", "weekly_average": 97, "last_night_average": 99, "last_night_5min_high": 128, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-28", "weekly_average": 95, "last_night_average": 72, "last_night_5min_high": 116, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 111}, {"date": "2026-07-29", "weekly_average": 92, "last_night_average": 84, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-30", "weekly_average": 92, "last_night_average": 95, "last_night_5min_high": 129, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 111}, {"date": "2026-07-31", "weekly_average": 87, "last_night_average": 64, "last_night_5min_high": 90, "status": "UNBALANCED", "balanced_low": 89, "balanced_upper": 111}, {"date": "2026-08-01", "weekly_average": 83, "last_night_average": 69, "last_night_5min_high": 106, "status": "LOW", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-08-02", "weekly_average": 78, "last_night_average": 69, "last_night_5min_high": 92, "status": "LOW", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-08-03", "weekly_average": 75, "last_night_average": 75, "last_night_5min_high": 108, "status": "LOW", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-08-04", "weekly_average": 75, "last_night_average": 72, "last_night_5min_high": 112, "status": "LOW", "balanced_low": 89, "balanced_upper": 111}, {"date": "2026-08-05", "weekly_average": 73, "last_night_average": 72, "last_night_5min_high": 117, "status": "LOW", "balanced_low": 89, "balanced_upper": 111}, {"date": "2026-08-06", "weekly_average": 71, "last_night_average": 75, "last_night_5min_high": 123, "status": "LOW", "balanced_low": 89, "balanced_upper": 111}, {"date": "2026-08-07", "weekly_average": 74, "last_night_average": 86, "last_night_5min_high": 132, "status": "LOW", "balanced_low": 88, "balanced_upper": 112}, {"date": "2026-08-08", "weekly_average": 75, "last_night_average": 75, "last_night_5min_high": 105, "status": "LOW", "balanced_low": 87, "balanced_upper": 112}, {"date": "2026-08-09", "weekly_average": 79, "last_night_average": 98, "last_night_5min_high": 136, "status": "LOW", "balanced_low": 86, "balanced_upper": 113}, {"date": "2026-08-10", "weekly_average": 81, "last_night_average": 89, "last_night_5min_high": 126, "status": "UNBALANCED", "balanced_low": 86, "balanced_upper": 113}, {"date": "2026-08-11", "weekly_average": 81, "last_night_average": 73, "last_night_5min_high": 106, "status": "UNBALANCED", "balanced_low": 86, "balanced_upper": 113}, {"date": "2026-08-12", "weekly_average": 81, "last_night_average": 72, "last_night_5min_high": 108, "status": "UNBALANCED", "balanced_low": 85, "balanced_upper": 113}, {"date": "2026-08-13", "weekly_average": 82, "last_night_average": 84, "last_night_5min_high": 130, "status": "UNBALANCED", "balanced_low": 85, "balanced_upper": 112}, {"date": "2026-08-14", "weekly_average": 81, "last_night_average": 80, "last_night_5min_high": 119, "status": "UNBALANCED", "balanced_low": 85, "balanced_upper": 112}, {"date": "2026-08-15", "weekly_average": 80, "last_night_average": 70, "last_night_5min_high": 100, "status": "UNBALANCED", "balanced_low": 84, "balanced_upper": 112}, {"date": "2026-08-16", "weekly_average": 79, "last_night_average": 89, "last_night_5min_high": 122, "status": "UNBALANCED", "balanced_low": 84, "balanced_upper": 112}];
-
-
-const labels = hrvData.map(
-    entry => entry.date
-);
-
-
-const overnight = hrvData.map(
-    entry => entry.last_night_average
-);
-
-
-const weekly = hrvData.map(
-    entry => entry.weekly_average
-);
-
-
-const balancedLow = hrvData.map(
-    entry => entry.balanced_low
-);
-
-
-const balancedUpper = hrvData.map(
-    entry => entry.balanced_upper
-);
-
-
-const ctx = document.getElementById(
-    "hrvChart"
-);
+const allHrvData = [{"date": "2025-08-15", "weekly_average": 64, "last_night_average": 78, "last_night_5min_high": 119, "status": "LOW", "balanced_low": 72, "balanced_upper": 102}, {"date": "2025-08-16", "weekly_average": 64, "last_night_average": 67, "last_night_5min_high": 110, "status": "LOW", "balanced_low": 72, "balanced_upper": 102}, {"date": "2025-08-18", "weekly_average": 66, "last_night_average": 80, "last_night_5min_high": 114, "status": "LOW", "balanced_low": 72, "balanced_upper": 102}, {"date": "2025-08-19", "weekly_average": 67, "last_night_average": 59, "last_night_5min_high": 80, "status": "UNBALANCED", "balanced_low": 71, "balanced_upper": 102}, {"date": "2025-08-20", "weekly_average": 69, "last_night_average": 65, "last_night_5min_high": 98, "status": "UNBALANCED", "balanced_low": 70, "balanced_upper": 101}, {"date": "2025-08-28", "weekly_average": 58, "last_night_average": 68, "last_night_5min_high": 92, "status": "LOW", "balanced_low": 69, "balanced_upper": 97}, {"date": "2025-08-29", "weekly_average": 55, "last_night_average": 58, "last_night_5min_high": 86, "status": "LOW", "balanced_low": 69, "balanced_upper": 97}, {"date": "2025-08-30", "weekly_average": 55, "last_night_average": null, "last_night_5min_high": null, "status": "LOW", "balanced_low": 69, "balanced_upper": 97}, {"date": "2025-08-31", "weekly_average": 55, "last_night_average": null, "last_night_5min_high": null, "status": "LOW", "balanced_low": 69, "balanced_upper": 96}, {"date": "2025-09-02", "weekly_average": 58, "last_night_average": 52, "last_night_5min_high": 76, "status": "LOW", "balanced_low": 66, "balanced_upper": 97}, {"date": "2025-09-03", "weekly_average": 58, "last_night_average": 55, "last_night_5min_high": 81, "status": "LOW", "balanced_low": 66, "balanced_upper": 96}, {"date": "2025-09-04", "weekly_average": 57, "last_night_average": 65, "last_night_5min_high": 102, "status": "LOW", "balanced_low": 66, "balanced_upper": 96}, {"date": "2025-09-05", "weekly_average": 56, "last_night_average": 51, "last_night_5min_high": 70, "status": "LOW", "balanced_low": 65, "balanced_upper": 95}, {"date": "2025-09-07", "weekly_average": 58, "last_night_average": 68, "last_night_5min_high": 91, "status": "LOW", "balanced_low": 65, "balanced_upper": 95}, {"date": "2025-09-08", "weekly_average": 59, "last_night_average": 67, "last_night_5min_high": 108, "status": "UNBALANCED", "balanced_low": 65, "balanced_upper": 95}, {"date": "2025-09-09", "weekly_average": 62, "last_night_average": 66, "last_night_5min_high": 99, "status": "UNBALANCED", "balanced_low": 64, "balanced_upper": 94}, {"date": "2025-09-10", "weekly_average": 64, "last_night_average": 68, "last_night_5min_high": 98, "status": "BALANCED", "balanced_low": 64, "balanced_upper": 93}, {"date": "2025-09-11", "weekly_average": 64, "last_night_average": 67, "last_night_5min_high": 101, "status": "BALANCED", "balanced_low": 64, "balanced_upper": 92}, {"date": "2025-09-12", "weekly_average": 65, "last_night_average": 55, "last_night_5min_high": 79, "status": "BALANCED", "balanced_low": 63, "balanced_upper": 92}, {"date": "2025-09-13", "weekly_average": 65, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 63, "balanced_upper": 92}, {"date": "2025-09-15", "weekly_average": 64, "last_night_average": 62, "last_night_5min_high": 84, "status": "BALANCED", "balanced_low": 63, "balanced_upper": 90}, {"date": "2025-09-16", "weekly_average": 61, "last_night_average": 54, "last_night_5min_high": 76, "status": "UNBALANCED", "balanced_low": 62, "balanced_upper": 90}, {"date": "2025-09-17", "weekly_average": 58, "last_night_average": 55, "last_night_5min_high": 76, "status": "UNBALANCED", "balanced_low": 62, "balanced_upper": 89}, {"date": "2025-09-18", "weekly_average": 57, "last_night_average": 57, "last_night_5min_high": 81, "status": "LOW", "balanced_low": 62, "balanced_upper": 88}, {"date": "2025-09-19", "weekly_average": 53, "last_night_average": 41, "last_night_5min_high": 50, "status": "LOW", "balanced_low": 62, "balanced_upper": 87}, {"date": "2025-09-20", "weekly_average": 55, "last_night_average": 62, "last_night_5min_high": 77, "status": "LOW", "balanced_low": 62, "balanced_upper": 87}, {"date": "2025-09-21", "weekly_average": 57, "last_night_average": 75, "last_night_5min_high": 110, "status": "UNBALANCED", "balanced_low": 62, "balanced_upper": 86}, {"date": "2025-09-22", "weekly_average": 60, "last_night_average": 84, "last_night_5min_high": 105, "status": "UNBALANCED", "balanced_low": 61, "balanced_upper": 85}, {"date": "2025-09-23", "weekly_average": 62, "last_night_average": 70, "last_night_5min_high": 104, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 85}, {"date": "2025-09-24", "weekly_average": 64, "last_night_average": 66, "last_night_5min_high": 104, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 84}, {"date": "2025-09-25", "weekly_average": 66, "last_night_average": 75, "last_night_5min_high": 112, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 84}, {"date": "2025-09-26", "weekly_average": 73, "last_night_average": 80, "last_night_5min_high": 126, "status": "BALANCED", "balanced_low": 59, "balanced_upper": 84}, {"date": "2025-09-27", "weekly_average": 77, "last_night_average": 92, "last_night_5min_high": 127, "status": "BALANCED", "balanced_low": 59, "balanced_upper": 84}, {"date": "2025-09-29", "weekly_average": 80, "last_night_average": 100, "last_night_5min_high": 129, "status": "BALANCED", "balanced_low": 59, "balanced_upper": 84}, {"date": "2025-09-30", "weekly_average": 80, "last_night_average": 69, "last_night_5min_high": 105, "status": "BALANCED", "balanced_low": 59, "balanced_upper": 84}, {"date": "2025-10-01", "weekly_average": 84, "last_night_average": 92, "last_night_5min_high": 122, "status": "UNBALANCED", "balanced_low": 59, "balanced_upper": 83}, {"date": "2025-10-02", "weekly_average": 84, "last_night_average": 73, "last_night_5min_high": 109, "status": "UNBALANCED", "balanced_low": 60, "balanced_upper": 83}, {"date": "2025-10-03", "weekly_average": 84, "last_night_average": 78, "last_night_5min_high": 104, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 84}, {"date": "2025-10-04", "weekly_average": 79, "last_night_average": 66, "last_night_5min_high": 98, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 85}, {"date": "2025-10-05", "weekly_average": 77, "last_night_average": 64, "last_night_5min_high": 99, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 84}, {"date": "2025-10-06", "weekly_average": 73, "last_night_average": 71, "last_night_5min_high": 95, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 86}, {"date": "2025-10-07", "weekly_average": 72, "last_night_average": 62, "last_night_5min_high": 87, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 86}, {"date": "2025-10-08", "weekly_average": 68, "last_night_average": 61, "last_night_5min_high": 88, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 87}, {"date": "2025-10-09", "weekly_average": 65, "last_night_average": 53, "last_night_5min_high": 68, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 87}, {"date": "2025-10-10", "weekly_average": 65, "last_night_average": 81, "last_night_5min_high": 120, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 88}, {"date": "2025-10-11", "weekly_average": 64, "last_night_average": 61, "last_night_5min_high": 107, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 87}, {"date": "2025-10-12", "weekly_average": 68, "last_night_average": 91, "last_night_5min_high": 145, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 87}, {"date": "2025-10-13", "weekly_average": 71, "last_night_average": 105, "last_night_5min_high": 137, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 87}, {"date": "2025-10-14", "weekly_average": 76, "last_night_average": 98, "last_night_5min_high": 128, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 86}, {"date": "2025-10-15", "weekly_average": 77, "last_night_average": 66, "last_night_5min_high": 104, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 86}, {"date": "2025-10-16", "weekly_average": 79, "last_night_average": 62, "last_night_5min_high": 102, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 86}, {"date": "2025-10-17", "weekly_average": 80, "last_night_average": 88, "last_night_5min_high": 118, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 86}, {"date": "2025-10-18", "weekly_average": 83, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 86}, {"date": "2025-10-20", "weekly_average": 78, "last_night_average": 81, "last_night_5min_high": 114, "status": "BALANCED", "balanced_low": 60, "balanced_upper": 89}, {"date": "2025-10-21", "weekly_average": 72, "last_night_average": 66, "last_night_5min_high": 88, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 90}, {"date": "2025-10-22", "weekly_average": 71, "last_night_average": 62, "last_night_5min_high": 96, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 90}, {"date": "2025-10-23", "weekly_average": 71, "last_night_average": 63, "last_night_5min_high": 80, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 90}, {"date": "2025-10-24", "weekly_average": 67, "last_night_average": 64, "last_night_5min_high": 90, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 91}, {"date": "2025-10-25", "weekly_average": 71, "last_night_average": 94, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 91}, {"date": "2025-10-27", "weekly_average": 73, "last_night_average": 96, "last_night_5min_high": 118, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 91}, {"date": "2025-10-28", "weekly_average": 75, "last_night_average": 79, "last_night_5min_high": 114, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 91}, {"date": "2025-10-29", "weekly_average": 78, "last_night_average": 81, "last_night_5min_high": 117, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 91}, {"date": "2025-10-30", "weekly_average": 82, "last_night_average": 85, "last_night_5min_high": 126, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 91}, {"date": "2025-10-31", "weekly_average": 88, "last_night_average": 95, "last_night_5min_high": 122, "status": "BALANCED", "balanced_low": 61, "balanced_upper": 90}, {"date": "2025-11-01", "weekly_average": 88, "last_night_average": 94, "last_night_5min_high": 117, "status": "BALANCED", "balanced_low": 62, "balanced_upper": 91}, {"date": "2025-11-02", "weekly_average": 89, "last_night_average": 95, "last_night_5min_high": 119, "status": "BALANCED", "balanced_low": 62, "balanced_upper": 91}, {"date": "2025-11-03", "weekly_average": 90, "last_night_average": 103, "last_night_5min_high": 143, "status": "BALANCED", "balanced_low": 62, "balanced_upper": 92}, {"date": "2025-11-04", "weekly_average": 93, "last_night_average": 103, "last_night_5min_high": 136, "status": "UNBALANCED", "balanced_low": 62, "balanced_upper": 92}, {"date": "2025-11-05", "weekly_average": 95, "last_night_average": 94, "last_night_5min_high": 132, "status": "UNBALANCED", "balanced_low": 63, "balanced_upper": 93}, {"date": "2025-11-06", "weekly_average": 97, "last_night_average": 98, "last_night_5min_high": 136, "status": "UNBALANCED", "balanced_low": 63, "balanced_upper": 94}, {"date": "2025-11-07", "weekly_average": 97, "last_night_average": 89, "last_night_5min_high": 114, "status": "UNBALANCED", "balanced_low": 63, "balanced_upper": 95}, {"date": "2025-11-08", "weekly_average": 99, "last_night_average": 112, "last_night_5min_high": 151, "status": "UNBALANCED", "balanced_low": 64, "balanced_upper": 96}, {"date": "2025-11-10", "weekly_average": 99, "last_night_average": 101, "last_night_5min_high": 132, "status": "UNBALANCED", "balanced_low": 64, "balanced_upper": 98}, {"date": "2025-11-11", "weekly_average": 98, "last_night_average": 97, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 65, "balanced_upper": 100}, {"date": "2025-11-12", "weekly_average": 97, "last_night_average": 86, "last_night_5min_high": 118, "status": "BALANCED", "balanced_low": 65, "balanced_upper": 101}, {"date": "2025-11-13", "weekly_average": 97, "last_night_average": 100, "last_night_5min_high": 120, "status": "BALANCED", "balanced_low": 66, "balanced_upper": 102}, {"date": "2025-11-14", "weekly_average": 98, "last_night_average": 94, "last_night_5min_high": 123, "status": "BALANCED", "balanced_low": 67, "balanced_upper": 102}, {"date": "2025-11-15", "weekly_average": 95, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 67, "balanced_upper": 104}, {"date": "2025-11-17", "weekly_average": 96, "last_night_average": 105, "last_night_5min_high": 135, "status": "BALANCED", "balanced_low": 68, "balanced_upper": 105}, {"date": "2025-11-18", "weekly_average": 96, "last_night_average": 97, "last_night_5min_high": 134, "status": "BALANCED", "balanced_low": 68, "balanced_upper": 106}, {"date": "2025-11-19", "weekly_average": 94, "last_night_average": 76, "last_night_5min_high": 114, "status": "BALANCED", "balanced_low": 69, "balanced_upper": 106}, {"date": "2025-11-20", "weekly_average": 90, "last_night_average": 79, "last_night_5min_high": 127, "status": "BALANCED", "balanced_low": 69, "balanced_upper": 107}, {"date": "2025-11-21", "weekly_average": 87, "last_night_average": 80, "last_night_5min_high": 128, "status": "BALANCED", "balanced_low": 70, "balanced_upper": 107}, {"date": "2025-11-22", "weekly_average": 87, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 70, "balanced_upper": 107}, {"date": "2025-11-24", "weekly_average": 84, "last_night_average": 88, "last_night_5min_high": 124, "status": "BALANCED", "balanced_low": 70, "balanced_upper": 108}, {"date": "2025-11-25", "weekly_average": 82, "last_night_average": 88, "last_night_5min_high": 123, "status": "BALANCED", "balanced_low": 71, "balanced_upper": 109}, {"date": "2025-11-27", "weekly_average": 91, "last_night_average": 112, "last_night_5min_high": 146, "status": "BALANCED", "balanced_low": 71, "balanced_upper": 109}, {"date": "2025-11-28", "weekly_average": 99, "last_night_average": 111, "last_night_5min_high": 142, "status": "BALANCED", "balanced_low": 72, "balanced_upper": 108}, {"date": "2025-11-29", "weekly_average": 99, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 72, "balanced_upper": 108}, {"date": "2025-11-30", "weekly_average": 99, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 72, "balanced_upper": 109}, {"date": "2025-12-01", "weekly_average": 100, "last_night_average": 90, "last_night_5min_high": 123, "status": "BALANCED", "balanced_low": 73, "balanced_upper": 109}, {"date": "2025-12-02", "weekly_average": 102, "last_night_average": 99, "last_night_5min_high": 138, "status": "BALANCED", "balanced_low": 73, "balanced_upper": 109}, {"date": "2025-12-03", "weekly_average": 101, "last_night_average": 94, "last_night_5min_high": 143, "status": "BALANCED", "balanced_low": 73, "balanced_upper": 109}, {"date": "2025-12-04", "weekly_average": 99, "last_night_average": 103, "last_night_5min_high": 132, "status": "BALANCED", "balanced_low": 74, "balanced_upper": 111}, {"date": "2025-12-05", "weekly_average": 99, "last_night_average": 111, "last_night_5min_high": 150, "status": "BALANCED", "balanced_low": 75, "balanced_upper": 111}, {"date": "2025-12-06", "weekly_average": 99, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 75, "balanced_upper": 112}, {"date": "2025-12-08", "weekly_average": 101, "last_night_average": 98, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 75, "balanced_upper": 112}, {"date": "2025-12-09", "weekly_average": 100, "last_night_average": 93, "last_night_5min_high": 134, "status": "BALANCED", "balanced_low": 76, "balanced_upper": 112}, {"date": "2025-12-10", "weekly_average": 99, "last_night_average": 93, "last_night_5min_high": 122, "status": "BALANCED", "balanced_low": 77, "balanced_upper": 112}, {"date": "2025-12-11", "weekly_average": 99, "last_night_average": 101, "last_night_5min_high": 128, "status": "BALANCED", "balanced_low": 77, "balanced_upper": 113}, {"date": "2025-12-12", "weekly_average": 97, "last_night_average": 102, "last_night_5min_high": 134, "status": "BALANCED", "balanced_low": 78, "balanced_upper": 113}, {"date": "2025-12-13", "weekly_average": 96, "last_night_average": 89, "last_night_5min_high": 122, "status": "BALANCED", "balanced_low": 79, "balanced_upper": 113}, {"date": "2025-12-14", "weekly_average": 97, "last_night_average": 104, "last_night_5min_high": 142, "status": "BALANCED", "balanced_low": 79, "balanced_upper": 114}, {"date": "2025-12-15", "weekly_average": 98, "last_night_average": 108, "last_night_5min_high": 145, "status": "BALANCED", "balanced_low": 79, "balanced_upper": 114}, {"date": "2025-12-16", "weekly_average": 100, "last_night_average": 106, "last_night_5min_high": 138, "status": "BALANCED", "balanced_low": 79, "balanced_upper": 114}, {"date": "2025-12-17", "weekly_average": 100, "last_night_average": 91, "last_night_5min_high": 123, "status": "BALANCED", "balanced_low": 80, "balanced_upper": 114}, {"date": "2025-12-18", "weekly_average": 99, "last_night_average": 94, "last_night_5min_high": 123, "status": "BALANCED", "balanced_low": 81, "balanced_upper": 114}, {"date": "2025-12-19", "weekly_average": 98, "last_night_average": 94, "last_night_5min_high": 126, "status": "BALANCED", "balanced_low": 81, "balanced_upper": 114}, {"date": "2025-12-23", "weekly_average": 97, "last_night_average": 107, "last_night_5min_high": 138, "status": "BALANCED", "balanced_low": 83, "balanced_upper": 116}, {"date": "2025-12-24", "weekly_average": 99, "last_night_average": 103, "last_night_5min_high": 133, "status": "BALANCED", "balanced_low": 84, "balanced_upper": 115}, {"date": "2025-12-25", "weekly_average": 101, "last_night_average": 102, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2025-12-26", "weekly_average": 103, "last_night_average": 105, "last_night_5min_high": 131, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2025-12-27", "weekly_average": 102, "last_night_average": 97, "last_night_5min_high": 137, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2025-12-28", "weekly_average": 101, "last_night_average": 99, "last_night_5min_high": 131, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2025-12-30", "weekly_average": 100, "last_night_average": 96, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 86, "balanced_upper": 115}, {"date": "2025-12-31", "weekly_average": 100, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 87, "balanced_upper": 114}, {"date": "2026-01-01", "weekly_average": 99, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 88, "balanced_upper": 114}, {"date": "2026-01-02", "weekly_average": 96, "last_night_average": 91, "last_night_5min_high": 129, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 114}, {"date": "2026-01-03", "weekly_average": 98, "last_night_average": 109, "last_night_5min_high": 135, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 113}, {"date": "2026-01-04", "weekly_average": 97, "last_night_average": 94, "last_night_5min_high": 157, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 113}, {"date": "2026-01-05", "weekly_average": 98, "last_night_average": 99, "last_night_5min_high": 128, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 113}, {"date": "2026-01-06", "weekly_average": 99, "last_night_average": 105, "last_night_5min_high": 129, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 113}, {"date": "2026-01-07", "weekly_average": 101, "last_night_average": 111, "last_night_5min_high": 148, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 113}, {"date": "2026-01-08", "weekly_average": 101, "last_night_average": 99, "last_night_5min_high": 129, "status": "BALANCED", "balanced_low": 91, "balanced_upper": 112}, {"date": "2026-01-09", "weekly_average": 104, "last_night_average": 111, "last_night_5min_high": 136, "status": "BALANCED", "balanced_low": 91, "balanced_upper": 112}, {"date": "2026-01-10", "weekly_average": 103, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 91, "balanced_upper": 112}, {"date": "2026-01-11", "weekly_average": 105, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 91, "balanced_upper": 112}, {"date": "2026-01-12", "weekly_average": 105, "last_night_average": 100, "last_night_5min_high": 128, "status": "BALANCED", "balanced_low": 91, "balanced_upper": 112}, {"date": "2026-01-13", "weekly_average": 107, "last_night_average": 117, "last_night_5min_high": 147, "status": "BALANCED", "balanced_low": 92, "balanced_upper": 112}, {"date": "2026-01-14", "weekly_average": 107, "last_night_average": 108, "last_night_5min_high": 140, "status": "BALANCED", "balanced_low": 92, "balanced_upper": 112}, {"date": "2026-01-15", "weekly_average": 110, "last_night_average": 114, "last_night_5min_high": 149, "status": "BALANCED", "balanced_low": 93, "balanced_upper": 111}, {"date": "2026-01-16", "weekly_average": 107, "last_night_average": 97, "last_night_5min_high": 124, "status": "BALANCED", "balanced_low": 94, "balanced_upper": 112}, {"date": "2026-01-17", "weekly_average": 108, "last_night_average": 110, "last_night_5min_high": 154, "status": "BALANCED", "balanced_low": 94, "balanced_upper": 112}, {"date": "2026-01-18", "weekly_average": 108, "last_night_average": 108, "last_night_5min_high": 149, "status": "BALANCED", "balanced_low": 94, "balanced_upper": 112}, {"date": "2026-01-19", "weekly_average": 109, "last_night_average": 112, "last_night_5min_high": 164, "status": "BALANCED", "balanced_low": 94, "balanced_upper": 112}, {"date": "2026-01-20", "weekly_average": 109, "last_night_average": 113, "last_night_5min_high": 159, "status": "BALANCED", "balanced_low": 94, "balanced_upper": 112}, {"date": "2026-01-21", "weekly_average": 108, "last_night_average": 101, "last_night_5min_high": 141, "status": "BALANCED", "balanced_low": 95, "balanced_upper": 113}, {"date": "2026-01-22", "weekly_average": 109, "last_night_average": 120, "last_night_5min_high": 163, "status": "BALANCED", "balanced_low": 95, "balanced_upper": 113}, {"date": "2026-01-23", "weekly_average": 108, "last_night_average": 93, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 95, "balanced_upper": 113}, {"date": "2026-01-24", "weekly_average": 108, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 95, "balanced_upper": 113}, {"date": "2026-01-25", "weekly_average": 108, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 95, "balanced_upper": 113}, {"date": "2026-01-26", "weekly_average": 106, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 96, "balanced_upper": 114}, {"date": "2026-01-27", "weekly_average": 108, "last_night_average": 121, "last_night_5min_high": 169, "status": "BALANCED", "balanced_low": 96, "balanced_upper": 115}, {"date": "2026-01-28", "weekly_average": 112, "last_night_average": 118, "last_night_5min_high": 162, "status": "BALANCED", "balanced_low": 96, "balanced_upper": 114}, {"date": "2026-01-29", "weekly_average": 111, "last_night_average": 115, "last_night_5min_high": 162, "status": "BALANCED", "balanced_low": 97, "balanced_upper": 115}, {"date": "2026-01-30", "weekly_average": 118, "last_night_average": 120, "last_night_5min_high": 165, "status": "UNBALANCED", "balanced_low": 97, "balanced_upper": 115}, {"date": "2026-02-01", "weekly_average": 117, "last_night_average": 113, "last_night_5min_high": 155, "status": "UNBALANCED", "balanced_low": 97, "balanced_upper": 115}, {"date": "2026-02-02", "weekly_average": 116, "last_night_average": 112, "last_night_5min_high": 148, "status": "UNBALANCED", "balanced_low": 97, "balanced_upper": 115}, {"date": "2026-02-03", "weekly_average": 114, "last_night_average": 109, "last_night_5min_high": 158, "status": "BALANCED", "balanced_low": 97, "balanced_upper": 116}, {"date": "2026-02-04", "weekly_average": 112, "last_night_average": 104, "last_night_5min_high": 148, "status": "BALANCED", "balanced_low": 98, "balanced_upper": 117}, {"date": "2026-02-05", "weekly_average": 112, "last_night_average": 117, "last_night_5min_high": 162, "status": "BALANCED", "balanced_low": 98, "balanced_upper": 117}, {"date": "2026-02-06", "weekly_average": 109, "last_night_average": 103, "last_night_5min_high": 137, "status": "BALANCED", "balanced_low": 98, "balanced_upper": 117}, {"date": "2026-02-07", "weekly_average": 109, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 98, "balanced_upper": 118}, {"date": "2026-02-08", "weekly_average": 109, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 98, "balanced_upper": 118}, {"date": "2026-02-09", "weekly_average": 109, "last_night_average": 115, "last_night_5min_high": 151, "status": "BALANCED", "balanced_low": 99, "balanced_upper": 118}, {"date": "2026-02-10", "weekly_average": 110, "last_night_average": 109, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 99, "balanced_upper": 118}, {"date": "2026-02-11", "weekly_average": 110, "last_night_average": 107, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-02-12", "weekly_average": 107, "last_night_average": 102, "last_night_5min_high": 152, "status": "BALANCED", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-02-13", "weekly_average": 108, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-02-14", "weekly_average": 105, "last_night_average": 92, "last_night_5min_high": 121, "status": "BALANCED", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-02-15", "weekly_average": 104, "last_night_average": 102, "last_night_5min_high": 142, "status": "BALANCED", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-02-16", "weekly_average": 102, "last_night_average": 102, "last_night_5min_high": 140, "status": "BALANCED", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-17", "weekly_average": 99, "last_night_average": 87, "last_night_5min_high": 129, "status": "UNBALANCED", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-18", "weekly_average": 98, "last_night_average": 101, "last_night_5min_high": 147, "status": "UNBALANCED", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-19", "weekly_average": 96, "last_night_average": 90, "last_night_5min_high": 128, "status": "LOW", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-20", "weekly_average": 96, "last_night_average": 99, "last_night_5min_high": 160, "status": "LOW", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-21", "weekly_average": 97, "last_night_average": 95, "last_night_5min_high": 132, "status": "LOW", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-22", "weekly_average": 95, "last_night_average": 91, "last_night_5min_high": 120, "status": "LOW", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-23", "weekly_average": 95, "last_night_average": 100, "last_night_5min_high": 125, "status": "LOW", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-24", "weekly_average": 94, "last_night_average": 84, "last_night_5min_high": 132, "status": "LOW", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-25", "weekly_average": 94, "last_night_average": 95, "last_night_5min_high": 146, "status": "LOW", "balanced_low": 101, "balanced_upper": 118}, {"date": "2026-02-26", "weekly_average": 95, "last_night_average": 102, "last_night_5min_high": 143, "status": "LOW", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-02-27", "weekly_average": 96, "last_night_average": 103, "last_night_5min_high": 154, "status": "LOW", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-02-28", "weekly_average": 96, "last_night_average": null, "last_night_5min_high": null, "status": "LOW", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-03-01", "weekly_average": 96, "last_night_average": 91, "last_night_5min_high": 116, "status": "UNBALANCED", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-03-02", "weekly_average": 92, "last_night_average": 80, "last_night_5min_high": 116, "status": "LOW", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-03-03", "weekly_average": 92, "last_night_average": 80, "last_night_5min_high": 124, "status": "LOW", "balanced_low": 99, "balanced_upper": 119}, {"date": "2026-03-04", "weekly_average": 86, "last_night_average": 67, "last_night_5min_high": 110, "status": "LOW", "balanced_low": 99, "balanced_upper": 118}, {"date": "2026-03-05", "weekly_average": 82, "last_night_average": 76, "last_night_5min_high": 107, "status": "LOW", "balanced_low": 99, "balanced_upper": 118}, {"date": "2026-03-06", "weekly_average": 74, "last_night_average": 54, "last_night_5min_high": 87, "status": "LOW", "balanced_low": 99, "balanced_upper": 118}, {"date": "2026-03-07", "weekly_average": 75, "last_night_average": 81, "last_night_5min_high": 125, "status": "LOW", "balanced_low": 100, "balanced_upper": 118}, {"date": "2026-03-08", "weekly_average": 73, "last_night_average": 74, "last_night_5min_high": 114, "status": "LOW", "balanced_low": 99, "balanced_upper": 118}, {"date": "2026-03-09", "weekly_average": 71, "last_night_average": 69, "last_night_5min_high": 109, "status": "LOW", "balanced_low": 98, "balanced_upper": 119}, {"date": "2026-03-10", "weekly_average": 72, "last_night_average": 86, "last_night_5min_high": 135, "status": "LOW", "balanced_low": 98, "balanced_upper": 119}, {"date": "2026-03-11", "weekly_average": 75, "last_night_average": 91, "last_night_5min_high": 127, "status": "LOW", "balanced_low": 96, "balanced_upper": 121}, {"date": "2026-03-12", "weekly_average": 77, "last_night_average": 93, "last_night_5min_high": 134, "status": "LOW", "balanced_low": 95, "balanced_upper": 122}, {"date": "2026-03-13", "weekly_average": 82, "last_night_average": 85, "last_night_5min_high": 135, "status": "LOW", "balanced_low": 93, "balanced_upper": 125}, {"date": "2026-03-14", "weekly_average": 85, "last_night_average": 102, "last_night_5min_high": 128, "status": "LOW", "balanced_low": 92, "balanced_upper": 125}, {"date": "2026-03-15", "weekly_average": 87, "last_night_average": null, "last_night_5min_high": null, "status": "UNBALANCED", "balanced_low": 92, "balanced_upper": 125}, {"date": "2026-03-16", "weekly_average": 92, "last_night_average": 93, "last_night_5min_high": 129, "status": "BALANCED", "balanced_low": 91, "balanced_upper": 126}, {"date": "2026-03-17", "weekly_average": 96, "last_night_average": 111, "last_night_5min_high": 144, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 125}, {"date": "2026-03-18", "weekly_average": 98, "last_night_average": 107, "last_night_5min_high": 144, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 125}, {"date": "2026-03-19", "weekly_average": 100, "last_night_average": 103, "last_night_5min_high": 138, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 124}, {"date": "2026-03-20", "weekly_average": 103, "last_night_average": 103, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 124}, {"date": "2026-03-21", "weekly_average": 104, "last_night_average": 106, "last_night_5min_high": 153, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 124}, {"date": "2026-03-22", "weekly_average": 104, "last_night_average": 107, "last_night_5min_high": 134, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 124}, {"date": "2026-03-23", "weekly_average": 105, "last_night_average": 101, "last_night_5min_high": 121, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 124}, {"date": "2026-03-24", "weekly_average": 105, "last_night_average": 105, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 124}, {"date": "2026-03-25", "weekly_average": 103, "last_night_average": 96, "last_night_5min_high": 148, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 124}, {"date": "2026-03-26", "weekly_average": 104, "last_night_average": 111, "last_night_5min_high": 155, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 123}, {"date": "2026-03-27", "weekly_average": 104, "last_night_average": 101, "last_night_5min_high": 140, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 123}, {"date": "2026-03-28", "weekly_average": 103, "last_night_average": 103, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 123}, {"date": "2026-03-29", "weekly_average": 102, "last_night_average": 97, "last_night_5min_high": 129, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 123}, {"date": "2026-03-30", "weekly_average": 99, "last_night_average": 80, "last_night_5min_high": 135, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 123}, {"date": "2026-03-31", "weekly_average": 95, "last_night_average": 83, "last_night_5min_high": 131, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 123}, {"date": "2026-04-01", "weekly_average": 96, "last_night_average": 100, "last_night_5min_high": 148, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 122}, {"date": "2026-04-02", "weekly_average": 94, "last_night_average": 99, "last_night_5min_high": 148, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 122}, {"date": "2026-04-03", "weekly_average": 93, "last_night_average": 90, "last_night_5min_high": 135, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 122}, {"date": "2026-04-04", "weekly_average": 92, "last_night_average": 97, "last_night_5min_high": 128, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 122}, {"date": "2026-04-05", "weekly_average": 91, "last_night_average": 89, "last_night_5min_high": 136, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 121}, {"date": "2026-04-06", "weekly_average": 92, "last_night_average": 85, "last_night_5min_high": 114, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 121}, {"date": "2026-04-07", "weekly_average": 88, "last_night_average": 62, "last_night_5min_high": 93, "status": "UNBALANCED", "balanced_low": 89, "balanced_upper": 120}, {"date": "2026-04-08", "weekly_average": 82, "last_night_average": 62, "last_night_5min_high": 109, "status": "UNBALANCED", "balanced_low": 89, "balanced_upper": 120}, {"date": "2026-04-09", "weekly_average": 81, "last_night_average": 91, "last_night_5min_high": 135, "status": "LOW", "balanced_low": 88, "balanced_upper": 119}, {"date": "2026-04-10", "weekly_average": 80, "last_night_average": 82, "last_night_5min_high": 119, "status": "LOW", "balanced_low": 88, "balanced_upper": 119}, {"date": "2026-04-11", "weekly_average": 80, "last_night_average": 97, "last_night_5min_high": 136, "status": "LOW", "balanced_low": 88, "balanced_upper": 119}, {"date": "2026-04-12", "weekly_average": 80, "last_night_average": 93, "last_night_5min_high": 126, "status": "LOW", "balanced_low": 88, "balanced_upper": 118}, {"date": "2026-04-13", "weekly_average": 81, "last_night_average": 91, "last_night_5min_high": 128, "status": "LOW", "balanced_low": 88, "balanced_upper": 118}, {"date": "2026-04-14", "weekly_average": 86, "last_night_average": 90, "last_night_5min_high": 137, "status": "UNBALANCED", "balanced_low": 87, "balanced_upper": 118}, {"date": "2026-04-15", "weekly_average": 91, "last_night_average": 96, "last_night_5min_high": 140, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 118}, {"date": "2026-04-16", "weekly_average": 92, "last_night_average": 96, "last_night_5min_high": 131, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 118}, {"date": "2026-04-17", "weekly_average": 94, "last_night_average": 99, "last_night_5min_high": 140, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 117}, {"date": "2026-04-19", "weekly_average": 94, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 117}, {"date": "2026-04-20", "weekly_average": 95, "last_night_average": 96, "last_night_5min_high": 126, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 116}, {"date": "2026-04-21", "weekly_average": 96, "last_night_average": 95, "last_night_5min_high": 135, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 116}, {"date": "2026-04-22", "weekly_average": 97, "last_night_average": 105, "last_night_5min_high": 140, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2026-04-23", "weekly_average": 98, "last_night_average": 99, "last_night_5min_high": 141, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2026-04-24", "weekly_average": 97, "last_night_average": 93, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2026-04-25", "weekly_average": 98, "last_night_average": 100, "last_night_5min_high": 142, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2026-04-26", "weekly_average": 98, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 115}, {"date": "2026-04-27", "weekly_average": 99, "last_night_average": 105, "last_night_5min_high": 134, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 114}, {"date": "2026-04-28", "weekly_average": 99, "last_night_average": 90, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 114}, {"date": "2026-04-29", "weekly_average": 98, "last_night_average": 104, "last_night_5min_high": 145, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 114}, {"date": "2026-04-30", "weekly_average": 99, "last_night_average": 101, "last_night_5min_high": 137, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 114}, {"date": "2026-05-01", "weekly_average": 100, "last_night_average": 98, "last_night_5min_high": 141, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 114}, {"date": "2026-05-02", "weekly_average": 99, "last_night_average": 97, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 85, "balanced_upper": 114}, {"date": "2026-05-04", "weekly_average": 98, "last_night_average": 101, "last_night_5min_high": 136, "status": "BALANCED", "balanced_low": 86, "balanced_upper": 114}, {"date": "2026-05-05", "weekly_average": 98, "last_night_average": 90, "last_night_5min_high": 128, "status": "BALANCED", "balanced_low": 86, "balanced_upper": 114}, {"date": "2026-05-06", "weekly_average": 98, "last_night_average": 101, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 86, "balanced_upper": 114}, {"date": "2026-05-07", "weekly_average": 97, "last_night_average": 97, "last_night_5min_high": 144, "status": "BALANCED", "balanced_low": 86, "balanced_upper": 114}, {"date": "2026-05-08", "weekly_average": 98, "last_night_average": 103, "last_night_5min_high": 136, "status": "BALANCED", "balanced_low": 86, "balanced_upper": 114}, {"date": "2026-05-09", "weekly_average": 96, "last_night_average": 84, "last_night_5min_high": 127, "status": "BALANCED", "balanced_low": 86, "balanced_upper": 114}, {"date": "2026-05-10", "weekly_average": 94, "last_night_average": 88, "last_night_5min_high": 136, "status": "BALANCED", "balanced_low": 87, "balanced_upper": 114}, {"date": "2026-05-11", "weekly_average": 94, "last_night_average": 96, "last_night_5min_high": 127, "status": "BALANCED", "balanced_low": 87, "balanced_upper": 114}, {"date": "2026-05-12", "weekly_average": 94, "last_night_average": 92, "last_night_5min_high": 131, "status": "BALANCED", "balanced_low": 87, "balanced_upper": 114}, {"date": "2026-05-13", "weekly_average": 92, "last_night_average": 87, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 87, "balanced_upper": 114}, {"date": "2026-05-14", "weekly_average": 92, "last_night_average": 99, "last_night_5min_high": 159, "status": "BALANCED", "balanced_low": 87, "balanced_upper": 114}, {"date": "2026-05-15", "weekly_average": 92, "last_night_average": 97, "last_night_5min_high": 132, "status": "BALANCED", "balanced_low": 88, "balanced_upper": 113}, {"date": "2026-05-16", "weekly_average": 93, "last_night_average": 93, "last_night_5min_high": 142, "status": "BALANCED", "balanced_low": 87, "balanced_upper": 113}, {"date": "2026-05-17", "weekly_average": 94, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 87, "balanced_upper": 113}, {"date": "2026-05-18", "weekly_average": 93, "last_night_average": 91, "last_night_5min_high": 143, "status": "BALANCED", "balanced_low": 88, "balanced_upper": 113}, {"date": "2026-05-19", "weekly_average": 93, "last_night_average": 94, "last_night_5min_high": 124, "status": "BALANCED", "balanced_low": 88, "balanced_upper": 113}, {"date": "2026-05-20", "weekly_average": 95, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 88, "balanced_upper": 112}, {"date": "2026-05-21", "weekly_average": 96, "last_night_average": 106, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 88, "balanced_upper": 112}, {"date": "2026-05-22", "weekly_average": 96, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 88, "balanced_upper": 112}, {"date": "2026-05-30", "weekly_average": null, "last_night_average": 98, "last_night_5min_high": 139, "status": "NONE", "balanced_low": 89, "balanced_upper": 110}, {"date": "2026-05-31", "weekly_average": null, "last_night_average": 100, "last_night_5min_high": 125, "status": "NONE", "balanced_low": 89, "balanced_upper": 110}, {"date": "2026-06-01", "weekly_average": null, "last_night_average": 79, "last_night_5min_high": 115, "status": "NONE", "balanced_low": 89, "balanced_upper": 110}, {"date": "2026-06-02", "weekly_average": 95, "last_night_average": 106, "last_night_5min_high": 147, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 110}, {"date": "2026-06-03", "weekly_average": 96, "last_night_average": 99, "last_night_5min_high": 136, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-04", "weekly_average": 98, "last_night_average": 109, "last_night_5min_high": 153, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-05", "weekly_average": 98, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-06", "weekly_average": 98, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-07", "weekly_average": 98, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-08", "weekly_average": 102, "last_night_average": 94, "last_night_5min_high": 137, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 110}, {"date": "2026-06-09", "weekly_average": 97, "last_night_average": 86, "last_night_5min_high": 123, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-11", "weekly_average": null, "last_night_average": 88, "last_night_5min_high": 133, "status": "NONE", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-12", "weekly_average": 87, "last_night_average": 81, "last_night_5min_high": 145, "status": "UNBALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-13", "weekly_average": 90, "last_night_average": 105, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-14", "weekly_average": 90, "last_night_average": 85, "last_night_5min_high": 118, "status": "UNBALANCED", "balanced_low": 91, "balanced_upper": 110}, {"date": "2026-06-15", "weekly_average": 89, "last_night_average": 88, "last_night_5min_high": 126, "status": "UNBALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-06-16", "weekly_average": 86, "last_night_average": 72, "last_night_5min_high": 112, "status": "LOW", "balanced_low": 90, "balanced_upper": 109}, {"date": "2026-06-17", "weekly_average": 86, "last_night_average": 84, "last_night_5min_high": 123, "status": "LOW", "balanced_low": 91, "balanced_upper": 108}, {"date": "2026-06-18", "weekly_average": 86, "last_night_average": 91, "last_night_5min_high": 130, "status": "LOW", "balanced_low": 90, "balanced_upper": 108}, {"date": "2026-06-19", "weekly_average": 86, "last_night_average": 83, "last_night_5min_high": 130, "status": "UNBALANCED", "balanced_low": 90, "balanced_upper": 108}, {"date": "2026-06-20", "weekly_average": 85, "last_night_average": 92, "last_night_5min_high": 113, "status": "LOW", "balanced_low": 90, "balanced_upper": 109}, {"date": "2026-06-21", "weekly_average": 84, "last_night_average": 80, "last_night_5min_high": 130, "status": "LOW", "balanced_low": 90, "balanced_upper": 108}, {"date": "2026-06-22", "weekly_average": 85, "last_night_average": 95, "last_night_5min_high": 132, "status": "LOW", "balanced_low": 90, "balanced_upper": 108}, {"date": "2026-06-23", "weekly_average": 88, "last_night_average": 91, "last_night_5min_high": 119, "status": "UNBALANCED", "balanced_low": 89, "balanced_upper": 109}, {"date": "2026-06-24", "weekly_average": 89, "last_night_average": 93, "last_night_5min_high": 142, "status": "UNBALANCED", "balanced_low": 90, "balanced_upper": 108}, {"date": "2026-06-25", "weekly_average": 89, "last_night_average": 90, "last_night_5min_high": 136, "status": "UNBALANCED", "balanced_low": 90, "balanced_upper": 108}, {"date": "2026-06-26", "weekly_average": 91, "last_night_average": 96, "last_night_5min_high": 147, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 108}, {"date": "2026-06-27", "weekly_average": 90, "last_night_average": 84, "last_night_5min_high": 117, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 107}, {"date": "2026-06-28", "weekly_average": 91, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 107}, {"date": "2026-06-29", "weekly_average": 94, "last_night_average": 109, "last_night_5min_high": 161, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 107}, {"date": "2026-06-30", "weekly_average": 97, "last_night_average": 115, "last_night_5min_high": 140, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 107}, {"date": "2026-07-01", "weekly_average": 98, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 106}, {"date": "2026-07-02", "weekly_average": 102, "last_night_average": 112, "last_night_5min_high": 162, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 106}, {"date": "2026-07-03", "weekly_average": 103, "last_night_average": 100, "last_night_5min_high": 139, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 106}, {"date": "2026-07-04", "weekly_average": 106, "last_night_average": 95, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 106}, {"date": "2026-07-06", "weekly_average": 105, "last_night_average": 105, "last_night_5min_high": 149, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 106}, {"date": "2026-07-07", "weekly_average": 102, "last_night_average": 99, "last_night_5min_high": 132, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 108}, {"date": "2026-07-08", "weekly_average": 103, "last_night_average": 107, "last_night_5min_high": 131, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 108}, {"date": "2026-07-09", "weekly_average": 102, "last_night_average": 108, "last_night_5min_high": 136, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 108}, {"date": "2026-07-10", "weekly_average": 103, "last_night_average": 102, "last_night_5min_high": 134, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 109}, {"date": "2026-07-11", "weekly_average": 104, "last_night_average": 104, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 109}, {"date": "2026-07-12", "weekly_average": 104, "last_night_average": null, "last_night_5min_high": null, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 109}, {"date": "2026-07-13", "weekly_average": 105, "last_night_average": 109, "last_night_5min_high": 151, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 109}, {"date": "2026-07-14", "weekly_average": 104, "last_night_average": 94, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 109}, {"date": "2026-07-15", "weekly_average": 103, "last_night_average": 104, "last_night_5min_high": 129, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-07-16", "weekly_average": 98, "last_night_average": 79, "last_night_5min_high": 114, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-07-17", "weekly_average": 98, "last_night_average": 103, "last_night_5min_high": 132, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-07-18", "weekly_average": 97, "last_night_average": 97, "last_night_5min_high": 131, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-07-19", "weekly_average": 94, "last_night_average": 80, "last_night_5min_high": 115, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 110}, {"date": "2026-07-20", "weekly_average": 91, "last_night_average": 87, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-21", "weekly_average": 90, "last_night_average": 87, "last_night_5min_high": 127, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-22", "weekly_average": 90, "last_night_average": 104, "last_night_5min_high": 145, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-23", "weekly_average": 93, "last_night_average": 97, "last_night_5min_high": 134, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-24", "weekly_average": 92, "last_night_average": 93, "last_night_5min_high": 141, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-25", "weekly_average": 92, "last_night_average": 98, "last_night_5min_high": 125, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-26", "weekly_average": 95, "last_night_average": 104, "last_night_5min_high": 138, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-27", "weekly_average": 97, "last_night_average": 99, "last_night_5min_high": 128, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-28", "weekly_average": 95, "last_night_average": 72, "last_night_5min_high": 116, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 111}, {"date": "2026-07-29", "weekly_average": 92, "last_night_average": 84, "last_night_5min_high": 130, "status": "BALANCED", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-07-30", "weekly_average": 92, "last_night_average": 95, "last_night_5min_high": 129, "status": "BALANCED", "balanced_low": 89, "balanced_upper": 111}, {"date": "2026-07-31", "weekly_average": 87, "last_night_average": 64, "last_night_5min_high": 90, "status": "UNBALANCED", "balanced_low": 89, "balanced_upper": 111}, {"date": "2026-08-01", "weekly_average": 83, "last_night_average": 69, "last_night_5min_high": 106, "status": "LOW", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-08-02", "weekly_average": 78, "last_night_average": 69, "last_night_5min_high": 92, "status": "LOW", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-08-03", "weekly_average": 75, "last_night_average": 75, "last_night_5min_high": 108, "status": "LOW", "balanced_low": 90, "balanced_upper": 111}, {"date": "2026-08-04", "weekly_average": 75, "last_night_average": 72, "last_night_5min_high": 112, "status": "LOW", "balanced_low": 89, "balanced_upper": 111}, {"date": "2026-08-05", "weekly_average": 73, "last_night_average": 72, "last_night_5min_high": 117, "status": "LOW", "balanced_low": 89, "balanced_upper": 111}, {"date": "2026-08-06", "weekly_average": 71, "last_night_average": 75, "last_night_5min_high": 123, "status": "LOW", "balanced_low": 89, "balanced_upper": 111}, {"date": "2026-08-07", "weekly_average": 74, "last_night_average": 86, "last_night_5min_high": 132, "status": "LOW", "balanced_low": 88, "balanced_upper": 112}, {"date": "2026-08-08", "weekly_average": 75, "last_night_average": 75, "last_night_5min_high": 105, "status": "LOW", "balanced_low": 87, "balanced_upper": 112}, {"date": "2026-08-09", "weekly_average": 79, "last_night_average": 98, "last_night_5min_high": 136, "status": "LOW", "balanced_low": 86, "balanced_upper": 113}, {"date": "2026-08-10", "weekly_average": 81, "last_night_average": 89, "last_night_5min_high": 126, "status": "UNBALANCED", "balanced_low": 86, "balanced_upper": 113}, {"date": "2026-08-11", "weekly_average": 81, "last_night_average": 73, "last_night_5min_high": 106, "status": "UNBALANCED", "balanced_low": 86, "balanced_upper": 113}, {"date": "2026-08-12", "weekly_average": 81, "last_night_average": 72, "last_night_5min_high": 108, "status": "UNBALANCED", "balanced_low": 85, "balanced_upper": 113}, {"date": "2026-08-13", "weekly_average": 82, "last_night_average": 84, "last_night_5min_high": 130, "status": "UNBALANCED", "balanced_low": 85, "balanced_upper": 112}, {"date": "2026-08-14", "weekly_average": 81, "last_night_average": 80, "last_night_5min_high": 119, "status": "UNBALANCED", "balanced_low": 85, "balanced_upper": 112}, {"date": "2026-08-15", "weekly_average": 80, "last_night_average": 70, "last_night_5min_high": 100, "status": "UNBALANCED", "balanced_low": 84, "balanced_upper": 112}, {"date": "2026-08-16", "weekly_average": 79, "last_night_average": 89, "last_night_5min_high": 122, "status": "UNBALANCED", "balanced_low": 84, "balanced_upper": 112}];
 
 
 // ========================================================
-// CHART
+// CREATE CHART
 // ========================================================
 
-new Chart(ctx, {
+let hrvChart;
 
-    type: "line",
+
+function createChart(days) {
+
+    const hrvData = allHrvData.slice(-days);
 
 
     // ----------------------------------------------------
-    // DATASETS
+    // DATA
     // ----------------------------------------------------
 
-    data: {
+    const labels = hrvData.map(
+        entry => entry.date
+    );
 
-        labels: labels,
+
+    const overnight = hrvData.map(
+        entry => entry.last_night_average
+    );
 
 
-        datasets: [
+    const weekly = hrvData.map(
+        entry => entry.weekly_average
+    );
 
-            // --------------------------------------------
-            // Overnight Average
-            // --------------------------------------------
 
-            {
-                label: "Overnight Average",
+    const balancedLow = hrvData.map(
+        entry => entry.balanced_low
+    );
 
-                data: overnight,
 
-                borderColor: "gray",
+    const balancedUpper = hrvData.map(
+        entry => entry.balanced_upper
+    );
 
-                borderWidth: 1,
 
-                pointRadius: 1,
+    // ----------------------------------------------------
+    // DESTROY OLD CHART
+    // ----------------------------------------------------
 
-                tension: 0.2
+    if (hrvChart) {
+
+        hrvChart.destroy();
+
+    }
+
+
+    // ----------------------------------------------------
+    // CREATE CHART
+    // ----------------------------------------------------
+
+    const ctx = document.getElementById(
+        "hrvChart"
+    );
+
+
+    hrvChart = new Chart(ctx, {
+
+        type: "line",
+
+
+        // ------------------------------------------------
+        // DATASETS
+        // ------------------------------------------------
+
+        data: {
+
+            labels: labels,
+
+
+            datasets: [
+
+                // ----------------------------------------
+                // Overnight Average
+                // ----------------------------------------
+
+                {
+                    label: "Overnight Average",
+
+                    data: overnight,
+
+                    borderColor: "gray",
+
+                    borderWidth: 1,
+
+                    pointRadius: 1,
+
+                    tension: 0.2
+                },
+
+
+                // ----------------------------------------
+                // Weekly Average
+                // ----------------------------------------
+
+                {
+                    label: "Weekly Average",
+
+                    data: weekly,
+
+                    borderWidth: 3,
+
+                    pointRadius: 3,
+
+                    tension: 0.2,
+
+
+                    segment: {
+
+                        borderColor: function(context) {
+
+                            const index =
+                                context.p0DataIndex;
+
+
+                            const value =
+                                weekly[index];
+
+
+                            const low =
+                                balancedLow[index];
+
+
+                            const high =
+                                balancedUpper[index];
+
+
+                            if (
+                                value >= low &&
+                                value <= high
+                            ) {
+
+                                return "lime";
+
+                            }
+
+                            else if (
+
+                                value >= low - 10 &&
+                                value <= high + 10
+
+                            ) {
+
+                                return "yellow";
+
+                            }
+
+                            else {
+
+                                return "red";
+
+                            }
+
+                        }
+
+                    }
+
+                },
+
+
+                // ----------------------------------------
+                // Balanced Range Upper
+                // ----------------------------------------
+
+                {
+                    label: "Garmin Balanced Range",
+
+                    data: balancedUpper,
+
+                    borderWidth: 0,
+
+                    pointRadius: 0,
+
+                    fill: "+1",
+
+                    backgroundColor:
+                        "rgba(100, 180, 100, 0.15)"
+                },
+
+
+                // ----------------------------------------
+                // Balanced Range Lower
+                // ----------------------------------------
+
+                {
+                    label: "Garmin Balanced Range",
+
+                    data: balancedLow,
+
+                    borderWidth: 0,
+
+                    pointRadius: 0,
+
+                    fill: false
+                }
+
+            ]
+
+        },
+
+
+        // ====================================================
+        // OPTIONS
+        // ====================================================
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+
+            // ------------------------------------------------
+            // Interaction
+            // ------------------------------------------------
+
+            interaction: {
+
+                mode: "index",
+
+                intersect: false
+
             },
 
 
-            // --------------------------------------------
-            // Weekly Average
-            // --------------------------------------------
+            // ------------------------------------------------
+            // Legend
+            // ------------------------------------------------
 
-            {
-                label: "Weekly Average",
+            plugins: {
 
-                data: weekly,
+                legend: {
 
-                borderWidth: 3,
+                    display: true,
 
-                pointRadius: 3,
+                    labels: {
 
-                tension: 0.2,
+                        color: "orange",
 
+                        filter: function(item, chart) {
 
-                segment: {
-
-                    borderColor: function(context) {
-
-                        const index =
-                            context.p0DataIndex;
-
-
-                        const value =
-                            weekly[index];
-
-
-                        const low =
-                            balancedLow[index];
-
-
-                        const high =
-                            balancedUpper[index];
-
-
-                        if (
-                            value >= low &&
-                            value <= high
-                        ) {
-
-                            return "lime";
-
-                        } else if (
-
-                            value >= low - 10 &&
-                            value <= high + 10
-
-                        ) {
-
-                            return "yellow";
-
-                        } else {
-
-                            return "red";
+                            // Hide lower balanced-range dataset
+                            return item.datasetIndex !== 3;
 
                         }
 
@@ -202,200 +381,109 @@ new Chart(ctx, {
             },
 
 
-            // --------------------------------------------
-            // Balanced Range Upper
-            // --------------------------------------------
+            // ------------------------------------------------
+            // Axes
+            // ------------------------------------------------
 
-            {
-                label: "Garmin Balanced Range",
+            scales: {
 
-                data: balancedUpper,
+                // --------------------------------------------
+                // X AXIS
+                // --------------------------------------------
 
-                borderWidth: 0,
+                x: {
 
-                pointRadius: 0,
+                    ticks: {
 
-                fill: "+1",
+                        color: "orange",
 
-                backgroundColor:
-                    "rgba(100, 180, 100, 0.15)"
-
-            },
+                        maxTicksLimit: 8,
 
 
-            // --------------------------------------------
-            // Balanced Range Lower
-            // --------------------------------------------
+                        callback: function(value) {
 
-            {
-                label: "Garmin Balanced Range",
+                            const date = new Date(
 
-                data: balancedLow,
+                                this.getLabelForValue(value)
 
-                borderWidth: 0,
-
-                pointRadius: 0,
-
-                fill: false
-
-            }
-
-        ]
-
-    },
+                            );
 
 
-    // ====================================================
-    // OPTIONS
-    // ====================================================
+                            return date.toLocaleDateString(
 
-    options: {
+                                "en-US",
 
-        responsive: true,
+                                {
 
-        maintainAspectRatio: false,
+                                    month: "short",
 
+                                    day: "numeric"
 
-        // ------------------------------------------------
-        // Interaction
-        // ------------------------------------------------
+                                }
 
-        interaction: {
+                            );
 
-            mode: "index",
+                        }
 
-            intersect: false
-
-        },
+                    },
 
 
-        // ------------------------------------------------
-        // Legend
-        // ------------------------------------------------
+                    title: {
 
-        plugins: {
+                        display: true,
 
-            legend: {
+                        text: "Date",
 
-                display: true,
+                        color: "orange"
 
-                labels: {
-
-                    filter: function(item, chart) {
-
-                        // Hide the lower balanced-range dataset
-                        return item.datasetIndex !== 3;
-
-                    }
-
-                }
-
-            }
-
-        },
+                    },
 
 
-        // ------------------------------------------------
-        // Axes
-        // ------------------------------------------------
+                    grid: {
 
-        scales: {
-
-            // --------------------------------------------
-            // X AXIS
-            // --------------------------------------------
-
-            x: {
-
-                ticks: {
-
-                    color: "orange",
-
-                    maxTicksLimit: 8,
-
-
-                    callback: function(value) {
-
-                        const date = new Date(
-
-                            this.getLabelForValue(value)
-
-                        );
-
-
-                        return date.toLocaleDateString(
-
-                            "en-US",
-
-                            {
-
-                                month: "short",
-
-                                day: "numeric"
-
-                            }
-
-                        );
+                        color:
+                            "rgba(255, 165, 0, 0.2)"
 
                     }
 
                 },
 
 
-                title: {
+                // --------------------------------------------
+                // Y AXIS
+                // --------------------------------------------
 
-                    display: true,
+                y: {
 
-                    text: "Date",
+                    min: 40,
 
-                    color: "orange"
-
-                },
-
-
-                grid: {
-
-                    color:
-                        "rgba(255, 165, 0, 0.2)"
-
-                }
-
-            },
+                    max: 140,
 
 
-            // --------------------------------------------
-            // Y AXIS
-            // --------------------------------------------
+                    ticks: {
 
-            y: {
+                        color: "orange"
 
-                min: 40,
-
-                max: 140,
+                    },
 
 
-                ticks: {
+                    title: {
 
-                    color: "orange"
+                        display: true,
 
-                },
+                        text: "HRV (ms)",
 
+                        color: "orange"
 
-                title: {
-
-                    display: true,
-
-                    text: "HRV (ms)",
-
-                    color: "orange"
-
-                },
+                    },
 
 
-                grid: {
+                    grid: {
 
-                    color:
-                        "rgba(255, 165, 0, 0.2)"
+                        color:
+                            "rgba(255, 165, 0, 0.2)"
+
+                    }
 
                 }
 
@@ -403,9 +491,34 @@ new Chart(ctx, {
 
         }
 
-    }
+    });
 
-});
+}
+
+
+// ========================================================
+// RANGE SELECTOR
+// ========================================================
+
+document
+    .getElementById("rangeSelect")
+    .addEventListener("change", function() {
+
+        const days = parseInt(
+            this.value
+        );
+
+
+        createChart(days);
+
+    });
+
+
+// ========================================================
+// INITIAL CHART
+// ========================================================
+
+createChart(56);
 
 </script>
 
